@@ -2,7 +2,7 @@
 
 **View the pages: [https://andrewbuyck.github.io/kitchen-remodel/](https://andrewbuyck.github.io/kitchen-remodel/)**
 
-- [Kitchen Floor Comparison](https://andrewbuyck.github.io/kitchen-remodel/floors/): 8 floors, 5 views
+- [Kitchen Floor Comparison](https://andrewbuyck.github.io/kitchen-remodel/floors/): 8 floors, 6 views
 - [Powder Room Wallpaper](https://andrewbuyck.github.io/kitchen-remodel/wallpaper/): 8 wallpapers, 2 views
 - [Living Room Threshold](https://andrewbuyck.github.io/kitchen-remodel/threshold/): 2 thresholds, 2 views
 

@@ -40,7 +40,13 @@ header { display: grid; gap: 6px; }
 .eyebrow { font: 500 12px/1 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
 h1 { font: 700 clamp(28px, 4vw, 44px)/1.05 var(--display); margin: 0; text-wrap: balance; letter-spacing: -.01em; }
 .sub { margin: 0; color: var(--muted); max-width: 70ch; }
+.bar { display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: center; justify-content: space-between; }
 .views { display: flex; flex-wrap: wrap; gap: 6px; }
+.lights { display: inline-flex; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); padding: 2px; }
+.lights[hidden] { display: none; }
+.lights button { font: inherit; color: inherit; cursor: pointer; border: 0; background: none; padding: 5px 14px;
+                 border-radius: 999px; font-weight: 500; font-size: 14px; }
+.lights button[aria-selected="true"] { background: var(--accent); color: var(--on-accent); }
 .views button, .chip, .thumb, .ghost { font: inherit; color: inherit; cursor: pointer; }
 .views button { border: 1px solid var(--line); background: var(--surface); padding: 7px 14px; border-radius: 999px;
                 font-weight: 500; font-size: 14px; }
@@ -112,7 +118,10 @@ footer code { font: 400 12px/1.4 var(--mono); }
     <p class="sub" id="subtitle"></p>
   </header>
 
-  <nav class="views" role="tablist" aria-label="View" id="views"></nav>
+  <div class="bar">
+    <nav class="views" role="tablist" aria-label="View" id="views"></nav>
+    <div class="lights" role="tablist" aria-label="Light" id="lights" hidden></div>
+  </div>
 
   <section>
     <figure class="viewer" id="viewer">
@@ -124,7 +133,7 @@ footer code { font: 400 12px/1.4 var(--mono); }
     </figure>
     <div class="caption">
       <span id="camNote"></span>
-      <span><kbd>1</kbd>–<kbd id="kmax">5</kbd> floors · <kbd>←</kbd> <kbd>→</kbd> step floors · <kbd>[</kbd> <kbd>]</kbd> views · <kbd>C</kbd> compare</span>
+      <span><kbd>1</kbd>–<kbd id="kmax">5</kbd> floors · <kbd>←</kbd> <kbd>→</kbd> step floors · <kbd>[</kbd> <kbd>]</kbd> views<span id="lkey"> · <kbd>L</kbd> day / evening</span> · <kbd>C</kbd> compare</span>
     </div>
   </section>
 
@@ -157,15 +166,20 @@ footer code { font: 400 12px/1.4 var(--mono); }
 </div>
 
 <script>
-const DATA = {"title": "Kitchen Floor Comparison", "subtitle": "One floor runs through the kitchen, dining room and powder room. The living room keeps its existing red oak in every option.", "cameras": [{"id": "CAM_WallA_OverIsland", "label": "Over the island", "note": "Wall B cut away, as in the builder's render", "aspect": 2.3993}, {"id": "CAM_WallA_Straight", "label": "Wall A", "note": "Near-elevation; island and Wall B cut away", "aspect": 2.5197}, {"id": "CAM_WallB_Pantry", "label": "Toward the pantry", "note": "Looking west past the island to the living room opening", "aspect": 2.3594}, {"id": "CAM_Living", "label": "From the living room", "note": "Through the Wall B opening: the existing red oak, the red oak threshold, then the kitchen floor and island", "aspect": 1.25}, {"id": "CAM_Dining", "label": "Dining + powder room", "note": "From the dining room's SE corner; kitchen beyond, powder room door on the right", "aspect": 1.7778}], "options": [{"variant": "floor_tile_palomino", "label": "Daltile Acreage · Palomino", "kind": "Wood-look porcelain plank", "tag": "Candidate", "swatch": "#9A846D", "specs": ["8 × 48 nominal (7¾ × 46¹⁵⁄₁₆ in actual), 5/16 in thick, ColorBody", "Matte, embossed grain in register with the print; shade variation V3", "⅓ running bond with a 3/16 in joint (Daltile's maximum offset for this plank)", "Grout modelled warm greige; colour not chosen yet"], "link": "https://www.daltile.com/products/wood-look/acreage/palomino"}, {"variant": "floor_tile_stetson", "label": "Daltile Acreage · Stetson", "kind": "Wood-look porcelain plank", "tag": "Candidate", "swatch": "#907258", "specs": ["8 × 48 nominal (7¾ × 46¹⁵⁄₁₆ in actual), 5/16 in thick, ColorBody", "Palomino's sibling: most of its graphics recoloured to a warmer tobacco brown, about 25% darker", "⅓ running bond, 3/16 in joint", "Matte, V3; about $7.81/sq ft"], "link": "https://www.daltile.com/products/wood-look/acreage/stetson"}, {"variant": "floor_tile_willow_bend", "label": "Daltile Willow Bend · Dark Brown", "kind": "Wood-look porcelain plank", "tag": "Candidate", "swatch": "#7F5F45", "specs": ["6 × 24 modelled (also 6 × 36; Daltile publishes 6 × 24 faces only)", "Reddish chocolate, about half Palomino's lightness; strong embossed grain", "⅓ offset, 3/16 in joint", "Matte, V3, wear class 3; about $3.09/sq ft"], "link": "https://www.daltile.com/products/wood-look/willow-bend/dark-brown"}, {"variant": "floor_tile_saddle_brook", "label": "Daltile Saddle Brook XT · Farmhouse XT", "kind": "Wood-look porcelain plank (slip-resistant)", "tag": "Candidate", "swatch": "#A99174", "specs": ["6 × 36 (5⅞ × 35⁷⁄₁₆ in actual)", "Light, contrasty taupe oak from the product photo; Daltile's sales sheet shows it about a third darker: check a sample", "⅓ offset, 3/16 in joint", "XT = StepWise slip-resistant; the interior twin is Saddle Brook SD14; about $9.02/sq ft"], "link": "https://www.daltile.com/products/wood-look/saddle-brook-xt/farmhouse-xt"}, {"variant": "floor_match_living", "label": "Red oak strip, matching the living room", "kind": "Solid hardwood", "tag": "Option", "swatch": "#B58E5C", "specs": ["2¼ in site-finished red oak strips, random lengths", "Amber oil-based polyurethane, satin", "Continues the existing living room floor through the Wall B opening", "Modelled from a photo of the existing living room floor"]}, {"variant": "base", "label": "Porcelain tile 24 × 24", "kind": "Large-format tile", "tag": "Placeholder", "swatch": "#B8B1A6", "specs": ["Warm grey, straight lay", "1/8 in grout, slightly darker", "Stand-in for the proposal's 'tile, standard lay'; no product chosen"]}, {"variant": "floor_wood_light", "label": "Light oak plank", "kind": "Wood look", "tag": "Placeholder", "swatch": "#B89A74", "specs": ["About 8½ in greige planks", "Texture: Poly Haven laminate_floor_02 (CC0)", "Stand-in until a real product is picked"]}, {"variant": "floor_wood_medium", "label": "Medium oak plank", "kind": "Wood look", "tag": "Placeholder", "swatch": "#8A6A48", "specs": ["About 7½ in golden-brown planks", "Texture: Poly Haven laminate_floor_03 (CC0)", "Stand-in until a real product is picked"]}], "settings": {"quality": "final", "samples": 1024, "resolution": [2560, 1067], "rendered_at": "2026-09-30T08:10:48", "exposure": 1.4, "white_balance": 3800, "recessed_kelvin": 3000, "hdri": "resting_place"}};
+const DATA = {"title": "Kitchen Floor Comparison", "subtitle": "One floor runs through the kitchen, dining room and powder room. The living room keeps its existing red oak in every option.", "cameras": [{"id": "CAM_WallA_OverIsland", "label": "Over the island", "note": "Wall B cut away, as in the builder's render", "aspect": 2.4}, {"id": "CAM_WallA_Straight", "label": "Wall A", "note": "Near-elevation; island and Wall B cut away", "aspect": 2.5197}, {"id": "CAM_WallB_Pantry", "label": "Toward the pantry", "note": "Looking west past the island to the living room opening", "aspect": 2.3587}, {"id": "CAM_Living", "label": "From the living room", "note": "Through the Wall B opening: the existing red oak, the red oak threshold, then the kitchen floor and island", "aspect": 1.25}, {"id": "CAM_LivingStair", "label": "Living room + stair", "note": "From near the living room's north wall, matched to a site photo: the opening, the stair, the red oak running toward the kitchen", "aspect": 1.3333}, {"id": "CAM_Dining", "label": "Dining + powder room", "note": "From the dining room's SE corner; kitchen beyond, powder room door on the right", "aspect": 1.7778}], "options": [{"variant": "floor_tile_palomino", "label": "Daltile Acreage · Palomino", "kind": "Wood-look porcelain plank", "tag": "Candidate", "swatch": "#9A846D", "specs": ["8 × 48 nominal (7¾ × 46¹⁵⁄₁₆ in actual), 5/16 in thick, ColorBody", "Matte, embossed grain in register with the print; shade variation V3", "⅓ running bond with a 3/16 in joint (Daltile's maximum offset for this plank)", "Grout modelled warm greige; colour not chosen yet"], "link": "https://www.daltile.com/products/wood-look/acreage/palomino"}, {"variant": "floor_tile_stetson", "label": "Daltile Acreage · Stetson", "kind": "Wood-look porcelain plank", "tag": "Candidate", "swatch": "#907258", "specs": ["8 × 48 nominal (7¾ × 46¹⁵⁄₁₆ in actual), 5/16 in thick, ColorBody", "Palomino's sibling: most of its graphics recoloured to a warmer tobacco brown, about 25% darker", "⅓ running bond, 3/16 in joint", "Matte, V3; about $7.81/sq ft"], "link": "https://www.daltile.com/products/wood-look/acreage/stetson"}, {"variant": "floor_tile_willow_bend", "label": "Daltile Willow Bend · Dark Brown", "kind": "Wood-look porcelain plank", "tag": "Candidate", "swatch": "#7F5F45", "specs": ["6 × 24 modelled (also 6 × 36; Daltile publishes 6 × 24 faces only)", "Reddish chocolate, about half Palomino's lightness; strong embossed grain", "⅓ offset, 3/16 in joint", "Matte, V3, wear class 3; about $3.09/sq ft"], "link": "https://www.daltile.com/products/wood-look/willow-bend/dark-brown"}, {"variant": "floor_tile_saddle_brook", "label": "Daltile Saddle Brook XT · Farmhouse XT", "kind": "Wood-look porcelain plank (slip-resistant)", "tag": "Candidate", "swatch": "#A99174", "specs": ["6 × 36 (5⅞ × 35⁷⁄₁₆ in actual)", "Light, contrasty taupe oak from the product photo; Daltile's sales sheet shows it about a third darker: check a sample", "⅓ offset, 3/16 in joint", "XT = StepWise slip-resistant; the interior twin is Saddle Brook SD14; about $9.02/sq ft"], "link": "https://www.daltile.com/products/wood-look/saddle-brook-xt/farmhouse-xt"}, {"variant": "floor_match_living", "label": "Red oak strip, matching the living room", "kind": "Solid hardwood", "tag": "Option", "swatch": "#B58E5C", "specs": ["2¼ in site-finished red oak strips, random lengths", "Amber oil-based polyurethane, satin", "Continues the existing living room floor through the Wall B opening", "Modelled from a photo of the existing living room floor"]}, {"variant": "base", "label": "Porcelain tile 24 × 24", "kind": "Large-format tile", "tag": "Placeholder", "swatch": "#B8B1A6", "specs": ["Warm grey, straight lay", "1/8 in grout, slightly darker", "Stand-in for the proposal's 'tile, standard lay'; no product chosen"]}, {"variant": "floor_wood_light", "label": "Light oak plank", "kind": "Wood look", "tag": "Placeholder", "swatch": "#B89A74", "specs": ["About 8½ in greige planks", "Texture: Poly Haven laminate_floor_02 (CC0)", "Stand-in until a real product is picked"]}, {"variant": "floor_wood_medium", "label": "Medium oak plank", "kind": "Wood look", "tag": "Placeholder", "swatch": "#8A6A48", "specs": ["About 7½ in golden-brown planks", "Texture: Poly Haven laminate_floor_03 (CC0)", "Stand-in until a real product is picked"]}], "lights": [{"id": "day", "label": "Day", "settings": {"quality": "web", "samples": 1024, "resolution": [1920, 800], "rendered_at": "2026-09-30T13:29:47", "white_balance": 3800.0, "exposure": 1.4, "recessed_kelvin": 3000, "hdri": "resting_place"}}], "settings": {"quality": "web", "samples": 1024, "resolution": [1920, 800], "rendered_at": "2026-09-30T13:29:47", "white_balance": 3800.0, "exposure": 1.4, "recessed_kelvin": 3000, "hdri": "resting_place"}};
 const $ = (id) => document.getElementById(id);
 const store = { get(k, d) { try { const v = localStorage.getItem(k); return v === null ? d : JSON.parse(v); } catch (e) { return d; } },
                 set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} } };
-const src = (opt, cam, thumb) => `img/${opt.variant}__${cam.id}${thumb ? "_t" : ""}.jpg`;
-const state = { cam: 0, a: 0, b: 1, compare: false, pos: 50 };
+const LIGHTS = DATA.lights || [{ id: "day", label: "Day" }];
+const state = { cam: 0, a: 0, b: 1, compare: false, pos: 50, light: 0 };
+const src = (opt, cam, thumb) => {
+  const lt = LIGHTS[state.light].id;
+  return `img/${opt.variant}__${cam.id}${lt === "day" ? "" : "__" + lt}${thumb ? "_t" : ""}.jpg`;
+};
 Object.assign(state, store.get("floorscmp", {}));
 const nOpt = DATA.options.length, nCam = DATA.cameras.length;
 state.cam = Math.min(state.cam, nCam - 1); state.a = Math.min(state.a, nOpt - 1); state.b = Math.min(state.b, nOpt - 1);
+state.light = Math.min(state.light || 0, LIGHTS.length - 1);
 if (state.b === state.a) state.b = (state.a + 1) % nOpt;
 
 $("subtitle").textContent = DATA.subtitle;
@@ -176,6 +190,14 @@ DATA.cameras.forEach((c, i) => {
   b.type = "button"; b.setAttribute("role", "tab"); b.id = "view-" + i; b.textContent = c.label;
   b.addEventListener("click", () => set({ cam: i }));
   $("views").append(b);
+});
+$("lights").hidden = LIGHTS.length < 2;
+$("lkey").hidden = LIGHTS.length < 2;
+LIGHTS.forEach((l, i) => {
+  const b = document.createElement("button");
+  b.type = "button"; b.setAttribute("role", "tab"); b.textContent = l.label;
+  b.addEventListener("click", () => set({ light: i }));
+  $("lights").append(b);
 });
 DATA.options.forEach((o, i) => {
   const b = document.createElement("button");
@@ -202,6 +224,7 @@ function set(p) {
 function render() {
   const cam = DATA.cameras[state.cam], A = DATA.options[state.a], B = DATA.options[state.b];
   document.querySelectorAll(".views button").forEach((b, i) => b.setAttribute("aria-selected", String(i === state.cam)));
+  document.querySelectorAll(".lights button").forEach((b, i) => b.setAttribute("aria-selected", String(i === state.light)));
   document.querySelectorAll(".chip").forEach((b, i) => {
     b.setAttribute("aria-checked", String(i === state.a));
     b.classList.toggle("is-b", state.compare && i === state.b);
@@ -209,8 +232,9 @@ function render() {
   const v = $("viewer");
   v.style.aspectRatio = cam.aspect || "2.4";
   v.style.setProperty("--pos", state.pos + "%");
-  $("imgA").src = src(A, cam); $("imgA").alt = `${cam.label} with ${A.label}`;
-  $("imgB").src = src(B, cam); $("imgB").alt = `${cam.label} with ${B.label}`;
+  const lt = LIGHTS[state.light].label.toLowerCase();
+  $("imgA").src = src(A, cam); $("imgA").alt = `${cam.label} with ${A.label}, ${lt}`;
+  $("imgB").src = src(B, cam); $("imgB").alt = `${cam.label} with ${B.label}, ${lt}`;
   $("layerB").hidden = $("handle").hidden = $("tagB").hidden = !state.compare;
   $("tagA").textContent = state.compare ? "A · " + A.label : A.label;
   $("tagB").textContent = "B · " + B.label;
@@ -257,15 +281,23 @@ document.addEventListener("keydown", (e) => {
   else if (k === "]") set({ cam: (state.cam + 1) % nCam });
   else if (k === "[") set({ cam: (state.cam + nCam - 1) % nCam });
   else if (k === "c" || k === "C") set({ compare: !state.compare });
+  else if ((k === "l" || k === "L") && LIGHTS.length > 1) set({ light: (state.light + 1) % LIGHTS.length });
   else return;
   e.preventDefault();
 });
 
-const s = DATA.settings || {};
-const when = s.rendered_at ? new Date(s.rendered_at).toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" }) : "";
-$("foot").innerHTML = `<span>Blender Cycles, ${s.samples || "?"} samples at ${(s.resolution || []).join(" × ")} px${when ? ", rendered " + when : ""}.
-  Every floor uses the same cameras, lights and exposure; only the floor changes.</span>
-  <span>Daylight from the <code>${s.hdri || "HDRI"}</code> sky through the windows, 3000 K recessed and under-cabinet LEDs,
-  white balance ${s.white_balance || "?"} K, exposure +${s.exposure ?? "?"}. Colours are close, not calibrated: judge against real samples in the room.</span>`;
+function footer() {
+  const s = DATA.settings || {};
+  const ev = LIGHTS.find((l) => l.id === "evening");
+  const e = (ev && ev.settings) || {};
+  const when = s.rendered_at ? new Date(s.rendered_at).toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" }) : "";
+  $("foot").innerHTML = `<span>Blender Cycles, ${s.samples || "?"} samples at ${(s.resolution || []).join(" × ")} px${when ? ", rendered " + when : ""}.
+    Every floor uses the same cameras, lights and exposure; only the floor changes.</span>
+    <span>Day: daylight from the <code>${s.hdri || "HDRI"}</code> sky through the windows (early-afternoon sun from the SSW)
+    plus the 3000 K recessed and under-cabinet LEDs, white balance ${s.white_balance || "?"} K, exposure +${s.exposure ?? "?"}.
+    ${ev ? `Evening: blue hour outside, the same fixtures, white balance ${e.white_balance || "?"} K, exposure +${e.exposure ?? "?"}.` : ""}
+    Colours are close, not calibrated: judge against real samples in the room.</span>`;
+}
+footer();
 render();
 </script>
