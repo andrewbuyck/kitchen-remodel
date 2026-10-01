@@ -1,4 +1,4 @@
-<title>Powder Room Wallpaper</title>
+<title>Powder Room: Wallpaper and Lower Wall</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@112,600;112,700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
@@ -40,7 +40,13 @@ header { display: grid; gap: 6px; }
 .eyebrow { font: 500 12px/1 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
 h1 { font: 700 clamp(28px, 4vw, 44px)/1.05 var(--display); margin: 0; text-wrap: balance; letter-spacing: -.01em; }
 .sub { margin: 0; color: var(--muted); max-width: 70ch; }
+.bar { display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: center; justify-content: space-between; }
 .views { display: flex; flex-wrap: wrap; gap: 6px; }
+.lights { display: inline-flex; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); padding: 2px; }
+.lights[hidden] { display: none; }
+.lights button { font: inherit; color: inherit; cursor: pointer; border: 0; background: none; padding: 5px 14px;
+                 border-radius: 999px; font-weight: 500; font-size: 14px; }
+.lights button[aria-selected="true"] { background: var(--accent); color: var(--on-accent); }
 .views button, .chip, .thumb, .ghost { font: inherit; color: inherit; cursor: pointer; }
 .views button { border: 1px solid var(--line); background: var(--surface); padding: 7px 14px; border-radius: 999px;
                 font-weight: 500; font-size: 14px; }
@@ -72,6 +78,11 @@ button:focus-visible, select:focus-visible, input:focus-visible { outline: 2px s
 .label { font: 500 12px/1 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted);
          margin: 0 0 10px; }
 .floors { display: grid; gap: 6px; }
+.axis + .axis { margin-top: 18px; }
+.axis.active > .label { color: var(--accent); }
+.axis .label button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; letter-spacing: inherit; text-transform: inherit; }
+.sheet .part + .part { border-top: 1px solid var(--line); padding-top: 12px; }
+.sheet .part { display: grid; gap: 8px; }
 .chip { display: grid; grid-template-columns: 22px minmax(0, 1fr) auto; align-items: center; gap: 12px; text-align: left;
         border: 1px solid var(--line); background: var(--surface); padding: 10px 12px; border-radius: 6px; }
 .chip .dot { width: 22px; height: 22px; border-radius: 50%; box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .15); }
@@ -108,11 +119,14 @@ footer code { font: 400 12px/1.4 var(--mono); }
 <div class="wrap">
   <header>
     <div class="eyebrow">Kitchen remodel 2026 · finish study</div>
-    <h1 id="title">Powder Room Wallpaper</h1>
+    <h1 id="title">Powder Room: Wallpaper and Lower Wall</h1>
     <p class="sub" id="subtitle"></p>
   </header>
 
-  <nav class="views" role="tablist" aria-label="View" id="views"></nav>
+  <div class="bar">
+    <nav class="views" role="tablist" aria-label="View" id="views"></nav>
+    <div class="lights" role="tablist" aria-label="Light" id="lights" hidden></div>
+  </div>
 
   <section>
     <figure class="viewer" id="viewer">
@@ -124,32 +138,24 @@ footer code { font: 400 12px/1.4 var(--mono); }
     </figure>
     <div class="caption">
       <span id="camNote"></span>
-      <span><kbd>1</kbd>–<kbd id="kmax">5</kbd> wallpapers · <kbd>←</kbd> <kbd>→</kbd> step wallpapers · <kbd>[</kbd> <kbd>]</kbd> views · <kbd>C</kbd> compare</span>
+      <span><kbd>1</kbd>–<kbd id="kmax">5</kbd> <span id="knoun">wallpapers</span> · <kbd>←</kbd> <kbd>→</kbd> step<span id="akey"> · <kbd>↑</kbd> <kbd>↓</kbd> switch list</span> · <kbd>[</kbd> <kbd>]</kbd> views<span id="lkey"> · <kbd>L</kbd> day / evening</span> · <kbd>C</kbd> compare</span>
     </div>
   </section>
 
   <section class="below">
-    <div>
-      <p class="label">Wallpaper</p>
-      <div class="floors" role="radiogroup" aria-label="Wallpaper" id="floors"></div>
-    </div>
+    <div id="axes"></div>
     <div class="sheet" id="sheet">
-      <div>
-        <p class="label" id="sheetKind"></p>
-        <h2 id="sheetName"></h2>
-      </div>
-      <ul id="sheetSpecs"></ul>
-      <div id="sheetLink"></div>
+      <div id="sheetBody"></div>
       <div class="cmp">
         <label for="cmpOn"><input type="checkbox" id="cmpOn"> Compare with</label>
-        <select id="cmpSel" aria-label="Second wallpaper"></select>
+        <select id="cmpSel" aria-label="Second option"></select>
         <input type="range" id="wipePos" min="0" max="100" value="50" aria-label="Divider position" disabled>
       </div>
     </div>
   </section>
 
   <section>
-    <p class="label">All wallpapers in this view</p>
+    <p class="label" id="stripLabel">All wallpapers in this view</p>
     <div class="strip" id="strip"></div>
   </section>
 
@@ -157,19 +163,38 @@ footer code { font: 400 12px/1.4 var(--mono); }
 </div>
 
 <script>
-const DATA = {"title": "Powder Room Wallpaper", "subtitle": "Seven papers at their true repeat size on every powder room wall, with the Bailey vanity in Vogue Green; plain paint for reference.", "cameras": [{"id": "CAM_PowderDoor", "label": "From the doorway", "note": "Standing in the dining room at the open door, looking at the long north wall", "aspect": 1.1248}, {"id": "CAM_Powder", "label": "Vanity wall", "note": "From above the toilet, looking east at the Bailey vanity and mirror", "aspect": 0.8}], "options": [{"variant": "powder_palm_jungle_olive", "label": "Cole & Son · Palm Jungle, Olive on White", "kind": "Big-scale jungle botanical", "tag": "Option", "swatch": "#C9D1B1", "specs": ["95/1001, non-woven, flat matte inks", "Repeat 20½ × 25¼ in, half-drop", "$279 per roll; about 3 rolls (≈ $840) for this room"], "link": "https://cole-and-son.com/en-us/products/palm-jungle-roll"}, {"variant": "powder_serengeti_mist", "label": "Hygge & West · Serengeti, Mist", "kind": "Whimsical animal print (Julia Rothman)", "tag": "Option", "swatch": "#ABB1AC", "specs": ["JRO-072, hand screen-printed coated paper", "Repeat 27 × 27 in; the maker's swatch shows a ⅓ drop (spec sheet says half-drop)", "$225 per double roll; 3–4 (≈ $675–900)"], "link": "https://hyggeandwest.com/products/serengeti"}, {"variant": "powder_song_for_mollie_tanbou", "label": "Chasing Paper · A Song for Mollie, Tanbou", "kind": "Graphic retro arches (David Quarles IV)", "tag": "Option", "swatch": "#9C9583", "specs": ["2245, peel & stick fabric (traditional also offered), matte", "Repeat 24 × 24 in, straight", "2 × 8 ft panels $90; about 8 (≈ $720)"], "link": "https://chasingpaper.com/products/a-song-for-mollie"}, {"variant": "powder_woodvale_orchard_charcoal", "label": "Cole & Son · Woodvale Orchard, Charcoal", "kind": "Moody dark botanical", "tag": "Option", "swatch": "#676555", "specs": ["116/5020 Ruby, Rose & Olive on Charcoal; surface-printed matte", "Repeat 20½ × 24 in, half-drop", "$319 per roll; about 3 (≈ $960)"], "link": "https://cole-and-son.com/en-us/products/woodvale-orchard-roll"}, {"variant": "powder_paradis_earth", "label": "Chasing Paper · Paradis, Earth", "kind": "Chinoiserie scenic (Far Studio)", "tag": "Option", "swatch": "#856F5A", "specs": ["1905, peel & stick fabric (traditional also offered), matte", "Repeat 24 × 48 in, straight", "2 × 8 ft panels $90; about 8 (≈ $720)"], "link": "https://chasingpaper.com/products/paradis"}, {"variant": "powder_punchinello_reds", "label": "Cole & Son · Punchinello, Reds & Charcoal", "kind": "Playful harlequin", "tag": "Option", "swatch": "#DEC6B0", "specs": ["103/2006 on Parchment, non-woven, flat matte inks", "Repeat 20½ × 18 in, straight", "$237 per roll; about 3 (≈ $710)"], "link": "https://cole-and-son.com/en-us/products/punchinello-roll"}, {"variant": "powder_acquario_charcoal", "label": "Cole & Son × Fornasetti · Acquario, Charcoal", "kind": "Splurge: surreal fish on a dark ground", "tag": "Splurge", "swatch": "#5C4C42", "specs": ["97/10048, non-woven, matte inks on a silk-strié ground", "Repeat 27 × 30 in, half-drop", "$585 per roll; about 3 (≈ $1,755)"], "link": "https://cole-and-son.com/en-us/products/acquario-roll"}, {"variant": "base", "label": "Paint (the kitchen's placeholder warm white)", "kind": "Reference", "tag": "Paint", "swatch": "#E7E0D2", "specs": ["Same wall paint as the kitchen for now", "Paint colours are still to be picked"]}], "settings": {"quality": "final", "samples": 1024, "resolution": [2560, 2276], "rendered_at": "2026-09-30T09:50:14", "exposure": 1.4, "white_balance": 3800, "recessed_kelvin": 3000, "hdri": "resting_place"}};
+const DATA = {"title": "Powder Room: Wallpaper and Lower Wall", "subtitle": "Ten papers at their true repeat size (three new ones from Painted Paper), each with or without a half-height lower wall from your pins. The window is in now: frosted lower sash and the existing cellular shade. Bailey vanity in Vogue Green.", "cameras": [{"id": "CAM_PowderDoor", "label": "From the doorway", "note": "Standing in the dining room at the open door, looking at the long north wall and the window", "aspect": 1.1248}, {"id": "CAM_Powder", "label": "Vanity wall", "note": "From above the toilet, looking east at the Bailey vanity and mirror (the window is just to the left)", "aspect": 0.8}], "axes": [{"label": "Wallpaper", "noun": "wallpaper", "nouns": "wallpapers", "options": [{"variant": "powder_palm_jungle_olive", "label": "Cole & Son · Palm Jungle, Olive on White", "kind": "Big-scale jungle botanical", "tag": "Option", "swatch": "#C9D1B1", "specs": ["95/1001, non-woven, flat matte inks", "Repeat 20½ × 25¼ in, half-drop", "$279 per roll; about 3 rolls (≈ $840) for this room"], "link": "https://cole-and-son.com/en-us/products/palm-jungle-roll"}, {"variant": "powder_serengeti_mist", "label": "Hygge & West · Serengeti, Mist", "kind": "Whimsical animal print (Julia Rothman)", "tag": "Option", "swatch": "#ABB1AC", "specs": ["JRO-072, hand screen-printed coated paper", "Repeat 27 × 27 in; the maker's swatch shows a ⅓ drop (spec sheet says half-drop)", "$225 per double roll; 3–4 (≈ $675–900)"], "link": "https://hyggeandwest.com/products/serengeti"}, {"variant": "powder_song_for_mollie_tanbou", "label": "Chasing Paper · A Song for Mollie, Tanbou", "kind": "Graphic retro arches (David Quarles IV)", "tag": "Option", "swatch": "#9C9583", "specs": ["2245, peel & stick fabric (traditional also offered), matte", "Repeat 24 × 24 in, straight", "2 × 8 ft panels $90; about 8 (≈ $720)"], "link": "https://chasingpaper.com/products/a-song-for-mollie"}, {"variant": "powder_woodvale_orchard_charcoal", "label": "Cole & Son · Woodvale Orchard, Charcoal", "kind": "Moody dark botanical", "tag": "Option", "swatch": "#676555", "specs": ["116/5020 Ruby, Rose & Olive on Charcoal; surface-printed matte", "Repeat 20½ × 24 in, half-drop", "$319 per roll; about 3 (≈ $960)"], "link": "https://cole-and-son.com/en-us/products/woodvale-orchard-roll"}, {"variant": "powder_paradis_earth", "label": "Chasing Paper · Paradis, Earth", "kind": "Chinoiserie scenic (Far Studio)", "tag": "Option", "swatch": "#856F5A", "specs": ["1905, peel & stick fabric (traditional also offered), matte", "Repeat 24 × 48 in, straight", "2 × 8 ft panels $90; about 8 (≈ $720)"], "link": "https://chasingpaper.com/products/paradis"}, {"variant": "powder_punchinello_reds", "label": "Cole & Son · Punchinello, Reds & Charcoal", "kind": "Playful harlequin", "tag": "Option", "swatch": "#DEC6B0", "specs": ["103/2006 on Parchment, non-woven, flat matte inks", "Repeat 20½ × 18 in, straight", "$237 per roll; about 3 (≈ $710)"], "link": "https://cole-and-son.com/en-us/products/punchinello-roll"}, {"variant": "powder_acquario_charcoal", "label": "Cole & Son × Fornasetti · Acquario, Charcoal", "kind": "Splurge: surreal fish on a dark ground", "tag": "Splurge", "swatch": "#5C4C42", "specs": ["97/10048, non-woven, matte inks on a silk-strié ground", "Repeat 27 × 30 in, half-drop", "$585 per roll; about 3 (≈ $1,755)"], "link": "https://cole-and-son.com/en-us/products/acquario-roll"}, {"variant": "powder_luca_bloom_black", "label": "Painted Paper · Luca Bloom", "kind": "Moody botanical: birds and cream peonies on near-black", "tag": "New", "swatch": "#514932", "specs": ["One colourway; peel & stick, pre-pasted or traditional", "Repeat 24 × 24 in, straight (measured; the match isn't published)", "13 ft roll $160 (P&S); about 4 × 27 ft rolls (≈ $1,280 P&S, $1,480 traditional)"], "link": "https://paintedpaper.com/products/luca-bloom-wallpaper"}, {"variant": "powder_panthere_pink", "label": "Painted Paper · Panthère", "kind": "Playful: magenta panthers, oranges and teal leaves on off-white", "tag": "New", "swatch": "#DCD9D4", "specs": ["One colourway; peel & stick, pre-pasted or traditional", "Repeat 24 × 24 in, straight (measured)", "About 4 × 27 ft rolls (≈ $1,280 P&S)"], "link": "https://paintedpaper.com/products/panthere-wallpaper"}, {"variant": "powder_wild_fig_grove_green", "label": "Painted Paper · Wild Fig Grove", "kind": "Engraved figs on a deep teal-green ground", "tag": "New", "swatch": "#5E5944", "specs": ["One colourway; the link opens on traditional (paste the paper)", "Repeat 24 × 24 in, straight (measured)", "About 4 × 27 ft rolls (≈ $1,480 traditional, $1,280 P&S)"], "link": "https://paintedpaper.com/products/wild-fig-grove-wallpaper"}, {"variant": "base", "label": "Paint (the kitchen's placeholder warm white)", "kind": "Reference", "tag": "Paint", "swatch": "#E7E0D2", "specs": ["Same wall paint as the kitchen for now", "Paint colours are still to be picked"]}]}, {"label": "Lower wall", "noun": "lower wall", "nouns": "lower walls", "options": [{"variant": "base", "label": "None: paper to the floor", "kind": "Reference", "tag": "Paint", "swatch": "#EDEBE4", "specs": ["The wallpaper runs from the baseboard to the ceiling"]}, {"variant": "wainscot_zellige_54", "label": "Zellige-look tile, slate blue, 54 in", "kind": "From your pin: 3 in glossy squares, stacked", "tag": "Pin", "swatch": "#7B8287", "specs": ["3 × 3 in handmade-look glazed squares, straight stack, ⅛ in beige grout", "To 54 in with no cap (a caulked top edge), as in the pin", "Colour estimated from the pin; real zellige varies tile to tile"]}, {"variant": "wainscot_beadboard_54", "label": "Beadboard, warm charcoal, 54 in", "kind": "From your pin: tall beaded paneling under a ledge", "tag": "Pin", "swatch": "#54504A", "specs": ["Beaded tongue-and-groove boards about 3 in wide", "To 54 in under a 2¼ in ledge cap; runs under the window to its apron", "Painted like Sherwin-Williams Urbane Bronze (SW 7048), satin: the pin's closest match"]}, {"variant": "wainscot_board_batten_54", "label": "Board and batten, warm charcoal, 54 in", "kind": "From your pin's sibling image", "tag": "Pin", "swatch": "#54504A", "specs": ["2½ in battens about 12 in apart over a flat panel, 3½ in top rail", "To 54 in under a 2¼ in ledge", "Urbane Bronze-like satin"]}, {"variant": "wainscot_beadboard_42", "label": "Narrow beadboard, olive grey, 42 in", "kind": "From the first pin's sibling image", "tag": "Pin", "swatch": "#5B5747", "specs": ["2 in beaded boards under a slim cap", "To 42 in; under the window it stops at the apron", "Dark olive-grey satin [colour estimated]"]}, {"variant": "wainscot_fluted_40", "label": "Fluted panel, white, 40 in", "kind": "Extra idea: reeded paneling", "tag": "Idea", "swatch": "#F2F1EC", "specs": ["1 in half-round reeds under a cap rail", "To 40 in", "Trim white; could be painted to match the vanity"]}, {"variant": "wainscot_picture_frame_36", "label": "Picture-frame moulding, white, 36 in", "kind": "Extra idea: classic applied moulding", "tag": "Idea", "swatch": "#F2F1EC", "specs": ["1¼ in moulding boxes under a 36 in chair rail", "Wallpaper above the rail, paint below", "Trim white"]}]}], "lights": [{"id": "day", "label": "Day", "settings": {"quality": "draft", "samples": 256, "resolution": [1920, 1707], "rendered_at": "2026-09-30T22:56:10", "white_balance": 3800.0, "exposure": 1.4, "recessed_kelvin": 3000, "hdri": "resting_place"}}], "settings": {"quality": "draft", "samples": 256, "resolution": [1920, 1707], "rendered_at": "2026-09-30T22:56:10", "white_balance": 3800.0, "exposure": 1.4, "recessed_kelvin": 3000, "hdri": "resting_place"}};
 const $ = (id) => document.getElementById(id);
 const store = { get(k, d) { try { const v = localStorage.getItem(k); return v === null ? d : JSON.parse(v); } catch (e) { return d; } },
                 set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} } };
-const src = (opt, cam, thumb) => `img/${opt.variant}__${cam.id}${thumb ? "_t" : ""}.jpg`;
-const state = { cam: 0, a: 0, b: 1, compare: false, pos: 50 };
-Object.assign(state, store.get("wallpapercmp", {}));
-const nOpt = DATA.options.length, nCam = DATA.cameras.length;
-state.cam = Math.min(state.cam, nCam - 1); state.a = Math.min(state.a, nOpt - 1); state.b = Math.min(state.b, nOpt - 1);
-if (state.b === state.a) state.b = (state.a + 1) % nOpt;
+const LIGHTS = DATA.lights || [{ id: "day", label: "Day" }];
+// One list per axis (a single-axis page has one). An image shows one option from every axis.
+const AXES = DATA.axes, nAx = AXES.length, nCam = DATA.cameras.length;
+const state = { cam: 0, sel: AXES.map(() => 0), ax: 0, b: 1, compare: false, pos: 50, light: 0 };
+// image key: the chosen variants that aren't "base", joined (renders/<a+b>/ on disk; "--" in the page's file names)
+const key = (sel) => { const p = sel.map((i, a) => AXES[a].options[i].variant).filter((v) => v !== "base"); return p.length ? p.join("--") : "base"; };
+const camLight = (cam) => { const lt = LIGHTS[state.light].id; return !cam.lights || cam.lights.includes(lt) ? lt : "day"; };
+const src = (sel, cam, thumb) => {
+  const lt = camLight(cam);
+  return `img/${key(sel)}__${cam.id}${lt === "day" ? "" : "__" + lt}${thumb ? "_t" : ""}.jpg`;
+};
+const names = (sel) => sel.map((i, a) => AXES[a].options[i].label).join(" · ");
+const nOf = (a) => AXES[a].options.length;
+const withAx = (sel, a, i) => sel.map((v, k) => (k === a ? i : v));
+Object.assign(state, store.get("wallpapercmp2", {}));
+if (!Array.isArray(state.sel) || state.sel.length !== nAx) state.sel = AXES.map(() => 0);
+state.sel = state.sel.map((v, a) => Math.max(0, Math.min(v, nOf(a) - 1)));
+state.ax = Math.min(state.ax || 0, nAx - 1);
+state.cam = Math.min(state.cam, nCam - 1);
+state.light = Math.min(state.light || 0, LIGHTS.length - 1);
+const fixB = () => {
+  state.b = Math.max(0, Math.min(state.b, nOf(state.ax) - 1));
+  if (state.b === state.sel[state.ax]) state.b = (state.b + 1) % nOf(state.ax);
+};
+fixB();
 
 $("subtitle").textContent = DATA.subtitle;
-$("kmax").textContent = Math.min(nOpt, 9);
+$("akey").hidden = nAx < 2;
 
 DATA.cameras.forEach((c, i) => {
   const b = document.createElement("button");
@@ -177,58 +202,95 @@ DATA.cameras.forEach((c, i) => {
   b.addEventListener("click", () => set({ cam: i }));
   $("views").append(b);
 });
-DATA.options.forEach((o, i) => {
+$("lights").hidden = LIGHTS.length < 2;
+$("lkey").hidden = LIGHTS.length < 2;
+LIGHTS.forEach((l, i) => {
   const b = document.createElement("button");
-  b.type = "button"; b.className = "chip"; b.setAttribute("role", "radio"); b.id = "floor-" + i;
-  b.innerHTML = `<span class="dot" style="background:${o.swatch}"></span>
-    <span class="name">${o.label}<span class="kind">${o.kind}</span></span>
-    <span class="pill ${o.tag.toLowerCase()}">${o.tag}</span>`;
-  b.addEventListener("click", () => set({ a: i, b: i === state.b ? state.a : state.b }));
-  $("floors").append(b);
-  const op = document.createElement("option");
-  op.value = i; op.textContent = o.label;
-  $("cmpSel").append(op);
+  b.type = "button"; b.setAttribute("role", "tab"); b.textContent = l.label;
+  b.addEventListener("click", () => set({ light: i }));
+  $("lights").append(b);
+});
+AXES.forEach((ax, a) => {
+  const box = document.createElement("div");
+  box.className = "axis"; box.id = "axis-" + a;
+  box.innerHTML = `<p class="label">${nAx > 1 ? `<button type="button">${ax.label}</button>` : ax.label}</p>
+    <div class="floors" role="radiogroup" aria-label="${ax.label}"></div>`;
+  if (nAx > 1) box.querySelector(".label button").addEventListener("click", () => set({ ax: a }));
+  ax.options.forEach((o, i) => {
+    const b = document.createElement("button");
+    b.type = "button"; b.className = "chip"; b.setAttribute("role", "radio");
+    b.innerHTML = `<span class="dot" style="background:${o.swatch}"></span>
+      <span class="name">${o.label}<span class="kind">${o.kind}</span></span>
+      <span class="pill ${o.tag.toLowerCase()}">${o.tag}</span>`;
+    b.addEventListener("click", () => {
+      const p = { ax: a, sel: withAx(state.sel, a, i) };
+      if (a === state.ax && i === state.b) p.b = state.sel[a];
+      set(p);
+    });
+    box.querySelector(".floors").append(b);
+  });
+  $("axes").append(box);
 });
 
-function preload(ci) { DATA.options.forEach((o) => { const im = new Image(); im.src = src(o, DATA.cameras[ci]); }); }
+function preload(ci) {
+  AXES[state.ax].options.forEach((o, i) => { const im = new Image(); im.src = src(withAx(state.sel, state.ax, i), DATA.cameras[ci]); });
+}
 
 function set(p) {
+  const axChanged = p.ax !== undefined && p.ax !== state.ax;
   Object.assign(state, p);
-  if (state.b === state.a) state.b = (state.a + 1) % nOpt;
-  store.set("wallpapercmp", state);
+  if (axChanged && p.b === undefined) state.b = (state.sel[state.ax] + 1) % nOf(state.ax);
+  fixB();
+  store.set("wallpapercmp2", state);
   render();
 }
 
 function render() {
-  const cam = DATA.cameras[state.cam], A = DATA.options[state.a], B = DATA.options[state.b];
+  const cam = DATA.cameras[state.cam], AX = AXES[state.ax];
+  const selB = withAx(state.sel, state.ax, state.b);
   document.querySelectorAll(".views button").forEach((b, i) => b.setAttribute("aria-selected", String(i === state.cam)));
-  document.querySelectorAll(".chip").forEach((b, i) => {
-    b.setAttribute("aria-checked", String(i === state.a));
-    b.classList.toggle("is-b", state.compare && i === state.b);
+  document.querySelectorAll(".lights button").forEach((b, i) => b.setAttribute("aria-selected", String(i === state.light)));
+  AXES.forEach((ax, a) => {
+    const box = $("axis-" + a);
+    box.classList.toggle("active", nAx > 1 && a === state.ax);
+    box.querySelectorAll(".chip").forEach((b, i) => {
+      b.setAttribute("aria-checked", String(i === state.sel[a]));
+      b.classList.toggle("is-b", state.compare && a === state.ax && i === state.b);
+    });
   });
+  $("kmax").textContent = Math.min(nOf(state.ax), 9);
+  $("knoun").textContent = AX.nouns;
   const v = $("viewer");
   v.style.aspectRatio = cam.aspect || "2.4";
   v.style.setProperty("--pos", state.pos + "%");
-  $("imgA").src = src(A, cam); $("imgA").alt = `${cam.label} with ${A.label}`;
-  $("imgB").src = src(B, cam); $("imgB").alt = `${cam.label} with ${B.label}`;
+  const lt = LIGHTS[state.light].label.toLowerCase();
+  $("imgA").src = src(state.sel, cam); $("imgA").alt = `${cam.label} with ${names(state.sel)}, ${lt}`;
+  $("imgB").src = src(selB, cam); $("imgB").alt = `${cam.label} with ${names(selB)}, ${lt}`;
   $("layerB").hidden = $("handle").hidden = $("tagB").hidden = !state.compare;
-  $("tagA").textContent = state.compare ? "A · " + A.label : A.label;
-  $("tagB").textContent = "B · " + B.label;
-  $("camNote").textContent = `${cam.label}: ${cam.note}`;
-  $("sheetKind").textContent = `${A.kind} · ${A.tag}`;
-  $("sheetName").textContent = A.label;
-  $("sheetSpecs").innerHTML = A.specs.map((s) => `<li>${s}</li>`).join("");
-  $("sheetLink").innerHTML = A.link ? `<a href="${A.link}" target="_blank" rel="noopener">Product page</a>` : "";
+  $("tagA").textContent = state.compare ? "A · " + names(state.sel) : names(state.sel);
+  $("tagB").textContent = "B · " + names(selB);
+  $("camNote").textContent = `${cam.label}: ${cam.note}` + (camLight(cam) !== LIGHTS[state.light].id ? " (rendered by day only)" : "");
+  $("sheetBody").innerHTML = state.sel.map((i, a) => {
+    const o = AXES[a].options[i];
+    return `<div class="part"><div><p class="label">${nAx > 1 ? AXES[a].label + " · " : ""}${o.kind} · ${o.tag}</p>
+      <h2>${o.label}</h2></div><ul>${o.specs.map((s) => `<li>${s}</li>`).join("")}</ul>
+      ${o.link ? `<div><a href="${o.link}" target="_blank" rel="noopener">Product page</a></div>` : ""}</div>`;
+  }).join("");
+  $("cmpSel").innerHTML = AX.options.map((o, i) => `<option value="${i}">${o.label}</option>`).join("");
+  $("cmpSel").setAttribute("aria-label", "Second " + AX.noun);
   $("cmpOn").checked = state.compare;
   $("cmpSel").value = String(state.b);
   $("wipePos").value = state.pos; $("wipePos").disabled = !state.compare;
+  const others = state.sel.map((i, a) => (a === state.ax ? null : AXES[a].options[i].label)).filter(Boolean);
+  $("stripLabel").textContent = `All ${AX.nouns} in this view` + (others.length ? ` (with ${others.join(", ")})` : "");
   $("strip").innerHTML = "";
-  DATA.options.forEach((o, i) => {
+  AX.options.forEach((o, i) => {
+    const sel = withAx(state.sel, state.ax, i);
     const t = document.createElement("button");
-    t.type = "button"; t.className = "thumb"; t.setAttribute("aria-current", String(i === state.a));
-    t.innerHTML = `<img src="${src(o, cam, true)}" alt="${cam.label} with ${o.label}" loading="lazy"
+    t.type = "button"; t.className = "thumb"; t.setAttribute("aria-current", String(i === state.sel[state.ax]));
+    t.innerHTML = `<img src="${src(sel, cam, true)}" alt="${cam.label} with ${names(sel)}" loading="lazy"
       style="aspect-ratio:${cam.aspect || 2.4}"><span>${o.label}</span>`;
-    t.addEventListener("click", () => { set({ a: i }); $("viewer").scrollIntoView({ block: "nearest", behavior: "smooth" }); });
+    t.addEventListener("click", () => { set({ sel }); $("viewer").scrollIntoView({ block: "nearest", behavior: "smooth" }); });
     $("strip").append(t);
   });
   preload(state.cam);
@@ -236,7 +298,7 @@ function render() {
 
 $("cmpOn").addEventListener("change", (e) => set({ compare: e.target.checked }));
 $("cmpSel").addEventListener("change", (e) => set({ b: Number(e.target.value), compare: true }));
-$("wipePos").addEventListener("input", (e) => { state.pos = Number(e.target.value); $("viewer").style.setProperty("--pos", state.pos + "%"); store.set("wallpapercmp", state); });
+$("wipePos").addEventListener("input", (e) => { state.pos = Number(e.target.value); $("viewer").style.setProperty("--pos", state.pos + "%"); store.set("wallpapercmp2", state); });
 
 let dragging = false;
 function drag(e) {
@@ -246,26 +308,36 @@ function drag(e) {
 }
 $("viewer").addEventListener("pointerdown", (e) => { if (!state.compare) return; dragging = true; $("viewer").setPointerCapture(e.pointerId); drag(e); });
 $("viewer").addEventListener("pointermove", (e) => { if (dragging) drag(e); });
-$("viewer").addEventListener("pointerup", () => { if (dragging) { dragging = false; store.set("wallpapercmp", state); } });
+$("viewer").addEventListener("pointerup", () => { if (dragging) { dragging = false; store.set("wallpapercmp2", state); } });
 
 document.addEventListener("keydown", (e) => {
   if (e.target.closest("select, input")) return;
-  const k = e.key;
-  if (/^[1-9]$/.test(k) && Number(k) <= nOpt) set({ a: Number(k) - 1 });
-  else if (k === "ArrowRight") set({ a: (state.a + 1) % nOpt });
-  else if (k === "ArrowLeft") set({ a: (state.a + nOpt - 1) % nOpt });
+  const k = e.key, a = state.ax, n = nOf(a);
+  if (/^[1-9]$/.test(k) && Number(k) <= n) set({ sel: withAx(state.sel, a, Number(k) - 1) });
+  else if (k === "ArrowRight") set({ sel: withAx(state.sel, a, (state.sel[a] + 1) % n) });
+  else if (k === "ArrowLeft") set({ sel: withAx(state.sel, a, (state.sel[a] + n - 1) % n) });
+  else if (k === "ArrowDown" && nAx > 1) set({ ax: (a + 1) % nAx });
+  else if (k === "ArrowUp" && nAx > 1) set({ ax: (a + nAx - 1) % nAx });
   else if (k === "]") set({ cam: (state.cam + 1) % nCam });
   else if (k === "[") set({ cam: (state.cam + nCam - 1) % nCam });
   else if (k === "c" || k === "C") set({ compare: !state.compare });
+  else if ((k === "l" || k === "L") && LIGHTS.length > 1) set({ light: (state.light + 1) % LIGHTS.length });
   else return;
   e.preventDefault();
 });
 
-const s = DATA.settings || {};
-const when = s.rendered_at ? new Date(s.rendered_at).toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" }) : "";
-$("foot").innerHTML = `<span>Blender Cycles, ${s.samples || "?"} samples at ${(s.resolution || []).join(" × ")} px${when ? ", rendered " + when : ""}.
-  Every wallpaper uses the same cameras, lights and exposure; only the wallpaper changes.</span>
-  <span>Daylight from the <code>${s.hdri || "HDRI"}</code> sky through the windows, 3000 K recessed and under-cabinet LEDs,
-  white balance ${s.white_balance || "?"} K, exposure +${s.exposure ?? "?"}. Colours are close, not calibrated: judge against real samples in the room.</span>`;
+function footer() {
+  const s = DATA.settings || {};
+  const ev = LIGHTS.find((l) => l.id === "evening");
+  const e = (ev && ev.settings) || {};
+  const when = s.rendered_at ? new Date(s.rendered_at).toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" }) : "";
+  $("foot").innerHTML = `<span>Blender Cycles, ${s.samples || "?"} samples at ${(s.resolution || []).join(" × ")} px${when ? ", rendered " + when : ""}.
+    Every option uses the same cameras, lights and exposure; only the option changes.</span>
+    <span>Day: daylight from the <code>${s.hdri || "HDRI"}</code> sky through the windows (early-afternoon sun from the SSW)
+    plus the 3000 K recessed and under-cabinet LEDs, white balance ${s.white_balance || "?"} K, exposure +${s.exposure ?? "?"}.
+    ${ev ? `Evening: blue hour outside, the same fixtures, white balance ${e.white_balance || "?"} K, exposure +${e.exposure ?? "?"}.` : ""}
+    Colours are close, not calibrated: judge against real samples in the room.</span>`;
+}
+footer();
 render();
 </script>

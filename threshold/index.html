@@ -78,6 +78,11 @@ button:focus-visible, select:focus-visible, input:focus-visible { outline: 2px s
 .label { font: 500 12px/1 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted);
          margin: 0 0 10px; }
 .floors { display: grid; gap: 6px; }
+.axis + .axis { margin-top: 18px; }
+.axis.active > .label { color: var(--accent); }
+.axis .label button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; letter-spacing: inherit; text-transform: inherit; }
+.sheet .part + .part { border-top: 1px solid var(--line); padding-top: 12px; }
+.sheet .part { display: grid; gap: 8px; }
 .chip { display: grid; grid-template-columns: 22px minmax(0, 1fr) auto; align-items: center; gap: 12px; text-align: left;
         border: 1px solid var(--line); background: var(--surface); padding: 10px 12px; border-radius: 6px; }
 .chip .dot { width: 22px; height: 22px; border-radius: 50%; box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .15); }
@@ -133,32 +138,24 @@ footer code { font: 400 12px/1.4 var(--mono); }
     </figure>
     <div class="caption">
       <span id="camNote"></span>
-      <span><kbd>1</kbd>–<kbd id="kmax">5</kbd> thresholds · <kbd>←</kbd> <kbd>→</kbd> step thresholds · <kbd>[</kbd> <kbd>]</kbd> views<span id="lkey"> · <kbd>L</kbd> day / evening</span> · <kbd>C</kbd> compare</span>
+      <span><kbd>1</kbd>–<kbd id="kmax">5</kbd> <span id="knoun">thresholds</span> · <kbd>←</kbd> <kbd>→</kbd> step<span id="akey"> · <kbd>↑</kbd> <kbd>↓</kbd> switch list</span> · <kbd>[</kbd> <kbd>]</kbd> views<span id="lkey"> · <kbd>L</kbd> day / evening</span> · <kbd>C</kbd> compare</span>
     </div>
   </section>
 
   <section class="below">
-    <div>
-      <p class="label">Threshold</p>
-      <div class="floors" role="radiogroup" aria-label="Threshold" id="floors"></div>
-    </div>
+    <div id="axes"></div>
     <div class="sheet" id="sheet">
-      <div>
-        <p class="label" id="sheetKind"></p>
-        <h2 id="sheetName"></h2>
-      </div>
-      <ul id="sheetSpecs"></ul>
-      <div id="sheetLink"></div>
+      <div id="sheetBody"></div>
       <div class="cmp">
         <label for="cmpOn"><input type="checkbox" id="cmpOn"> Compare with</label>
-        <select id="cmpSel" aria-label="Second threshold"></select>
+        <select id="cmpSel" aria-label="Second option"></select>
         <input type="range" id="wipePos" min="0" max="100" value="50" aria-label="Divider position" disabled>
       </div>
     </div>
   </section>
 
   <section>
-    <p class="label">All thresholds in this view</p>
+    <p class="label" id="stripLabel">All thresholds in this view</p>
     <div class="strip" id="strip"></div>
   </section>
 
@@ -166,24 +163,37 @@ footer code { font: 400 12px/1.4 var(--mono); }
 </div>
 
 <script>
-const DATA = {"title": "Living Room Threshold", "subtitle": "Where the new kitchen floor (Daltile Palomino here) meets the living room's existing red oak, in the Wall B opening: a bevelled saddle across the 4½ in wall, in red oak or honed Taj Mahal.", "cameras": [{"id": "CAM_Threshold", "label": "Close-up", "note": "Looking down at the doorway from the living room side", "aspect": 1.5}, {"id": "CAM_Living", "label": "From the living room", "note": "Standing in the living room, looking through the opening into the kitchen", "aspect": 1.25}], "options": [{"variant": "floor_tile_palomino", "label": "Red oak saddle", "kind": "Wood, finished to match the living room", "tag": "Option", "swatch": "#B58E5C", "specs": ["4½ × ⅝ in bevelled saddle, about ¼ in proud", "Reads as part of the living room floor", "A flush T-mould is the lower-profile alternative"]}, {"variant": "threshold_stone", "label": "Honed Taj Mahal saddle", "kind": "Stone, from the counter slab", "tag": "Option", "swatch": "#D6D2C8", "specs": ["Same size and bevels", "Honed, not polished, so it isn't slippery", "Ties the doorway to the counters and backsplash"]}], "lights": [{"id": "day", "label": "Day", "settings": {"quality": "web", "samples": 1024, "resolution": [1920, 1280], "rendered_at": "2026-09-30T14:50:17", "white_balance": 3800.0, "exposure": 1.4, "recessed_kelvin": 3000, "hdri": "resting_place"}}], "settings": {"quality": "web", "samples": 1024, "resolution": [1920, 1280], "rendered_at": "2026-09-30T14:50:17", "white_balance": 3800.0, "exposure": 1.4, "recessed_kelvin": 3000, "hdri": "resting_place"}};
+const DATA = {"title": "Living Room Threshold", "subtitle": "Where the new kitchen floor (Daltile Palomino here) meets the living room's existing red oak, in the Wall B opening: a bevelled saddle across the 4½ in wall, in red oak or honed Taj Mahal.", "cameras": [{"id": "CAM_Threshold", "label": "Close-up", "note": "Looking down at the doorway from the living room side", "aspect": 1.5}, {"id": "CAM_Living", "label": "From the living room", "note": "Standing in the living room, looking through the opening into the kitchen", "aspect": 1.25}], "axes": [{"label": "Threshold", "noun": "threshold", "nouns": "thresholds", "options": [{"variant": "floor_tile_palomino", "label": "Red oak saddle", "kind": "Wood, finished to match the living room", "tag": "Option", "swatch": "#B58E5C", "specs": ["4½ × ⅝ in bevelled saddle, about ¼ in proud", "Reads as part of the living room floor", "A flush T-mould is the lower-profile alternative"]}, {"variant": "threshold_stone", "label": "Honed Taj Mahal saddle", "kind": "Stone, from the counter slab", "tag": "Option", "swatch": "#D6D2C8", "specs": ["Same size and bevels", "Honed, not polished, so it isn't slippery", "Ties the doorway to the counters and backsplash"]}]}], "lights": [{"id": "day", "label": "Day", "settings": {"quality": "web", "samples": 1024, "resolution": [1920, 1280], "rendered_at": "2026-09-30T15:20:00", "white_balance": 3800.0, "exposure": 1.4, "recessed_kelvin": 3000, "hdri": "resting_place"}}], "settings": {"quality": "web", "samples": 1024, "resolution": [1920, 1280], "rendered_at": "2026-09-30T15:20:00", "white_balance": 3800.0, "exposure": 1.4, "recessed_kelvin": 3000, "hdri": "resting_place"}};
 const $ = (id) => document.getElementById(id);
 const store = { get(k, d) { try { const v = localStorage.getItem(k); return v === null ? d : JSON.parse(v); } catch (e) { return d; } },
                 set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} } };
 const LIGHTS = DATA.lights || [{ id: "day", label: "Day" }];
-const state = { cam: 0, a: 0, b: 1, compare: false, pos: 50, light: 0 };
-const src = (opt, cam, thumb) => {
+// One list per axis (a single-axis page has one). An image shows one option from every axis.
+const AXES = DATA.axes, nAx = AXES.length, nCam = DATA.cameras.length;
+const state = { cam: 0, sel: AXES.map(() => 0), ax: 0, b: 1, compare: false, pos: 50, light: 0 };
+// image key: the chosen variants that aren't "base", joined (renders/<a+b>/ on disk; "--" in the page's file names)
+const key = (sel) => { const p = sel.map((i, a) => AXES[a].options[i].variant).filter((v) => v !== "base"); return p.length ? p.join("--") : "base"; };
+const src = (sel, cam, thumb) => {
   const lt = LIGHTS[state.light].id;
-  return `img/${opt.variant}__${cam.id}${lt === "day" ? "" : "__" + lt}${thumb ? "_t" : ""}.jpg`;
+  return `img/${key(sel)}__${cam.id}${lt === "day" ? "" : "__" + lt}${thumb ? "_t" : ""}.jpg`;
 };
-Object.assign(state, store.get("thresholdcmp", {}));
-const nOpt = DATA.options.length, nCam = DATA.cameras.length;
-state.cam = Math.min(state.cam, nCam - 1); state.a = Math.min(state.a, nOpt - 1); state.b = Math.min(state.b, nOpt - 1);
+const names = (sel) => sel.map((i, a) => AXES[a].options[i].label).join(" · ");
+const nOf = (a) => AXES[a].options.length;
+const withAx = (sel, a, i) => sel.map((v, k) => (k === a ? i : v));
+Object.assign(state, store.get("thresholdcmp2", {}));
+if (!Array.isArray(state.sel) || state.sel.length !== nAx) state.sel = AXES.map(() => 0);
+state.sel = state.sel.map((v, a) => Math.max(0, Math.min(v, nOf(a) - 1)));
+state.ax = Math.min(state.ax || 0, nAx - 1);
+state.cam = Math.min(state.cam, nCam - 1);
 state.light = Math.min(state.light || 0, LIGHTS.length - 1);
-if (state.b === state.a) state.b = (state.a + 1) % nOpt;
+const fixB = () => {
+  state.b = Math.max(0, Math.min(state.b, nOf(state.ax) - 1));
+  if (state.b === state.sel[state.ax]) state.b = (state.b + 1) % nOf(state.ax);
+};
+fixB();
 
 $("subtitle").textContent = DATA.subtitle;
-$("kmax").textContent = Math.min(nOpt, 9);
+$("akey").hidden = nAx < 2;
 
 DATA.cameras.forEach((c, i) => {
   const b = document.createElement("button");
@@ -199,60 +209,87 @@ LIGHTS.forEach((l, i) => {
   b.addEventListener("click", () => set({ light: i }));
   $("lights").append(b);
 });
-DATA.options.forEach((o, i) => {
-  const b = document.createElement("button");
-  b.type = "button"; b.className = "chip"; b.setAttribute("role", "radio"); b.id = "floor-" + i;
-  b.innerHTML = `<span class="dot" style="background:${o.swatch}"></span>
-    <span class="name">${o.label}<span class="kind">${o.kind}</span></span>
-    <span class="pill ${o.tag.toLowerCase()}">${o.tag}</span>`;
-  b.addEventListener("click", () => set({ a: i, b: i === state.b ? state.a : state.b }));
-  $("floors").append(b);
-  const op = document.createElement("option");
-  op.value = i; op.textContent = o.label;
-  $("cmpSel").append(op);
+AXES.forEach((ax, a) => {
+  const box = document.createElement("div");
+  box.className = "axis"; box.id = "axis-" + a;
+  box.innerHTML = `<p class="label">${nAx > 1 ? `<button type="button">${ax.label}</button>` : ax.label}</p>
+    <div class="floors" role="radiogroup" aria-label="${ax.label}"></div>`;
+  if (nAx > 1) box.querySelector(".label button").addEventListener("click", () => set({ ax: a }));
+  ax.options.forEach((o, i) => {
+    const b = document.createElement("button");
+    b.type = "button"; b.className = "chip"; b.setAttribute("role", "radio");
+    b.innerHTML = `<span class="dot" style="background:${o.swatch}"></span>
+      <span class="name">${o.label}<span class="kind">${o.kind}</span></span>
+      <span class="pill ${o.tag.toLowerCase()}">${o.tag}</span>`;
+    b.addEventListener("click", () => {
+      const p = { ax: a, sel: withAx(state.sel, a, i) };
+      if (a === state.ax && i === state.b) p.b = state.sel[a];
+      set(p);
+    });
+    box.querySelector(".floors").append(b);
+  });
+  $("axes").append(box);
 });
 
-function preload(ci) { DATA.options.forEach((o) => { const im = new Image(); im.src = src(o, DATA.cameras[ci]); }); }
+function preload(ci) {
+  AXES[state.ax].options.forEach((o, i) => { const im = new Image(); im.src = src(withAx(state.sel, state.ax, i), DATA.cameras[ci]); });
+}
 
 function set(p) {
+  const axChanged = p.ax !== undefined && p.ax !== state.ax;
   Object.assign(state, p);
-  if (state.b === state.a) state.b = (state.a + 1) % nOpt;
-  store.set("thresholdcmp", state);
+  if (axChanged && p.b === undefined) state.b = (state.sel[state.ax] + 1) % nOf(state.ax);
+  fixB();
+  store.set("thresholdcmp2", state);
   render();
 }
 
 function render() {
-  const cam = DATA.cameras[state.cam], A = DATA.options[state.a], B = DATA.options[state.b];
+  const cam = DATA.cameras[state.cam], AX = AXES[state.ax];
+  const selB = withAx(state.sel, state.ax, state.b);
   document.querySelectorAll(".views button").forEach((b, i) => b.setAttribute("aria-selected", String(i === state.cam)));
   document.querySelectorAll(".lights button").forEach((b, i) => b.setAttribute("aria-selected", String(i === state.light)));
-  document.querySelectorAll(".chip").forEach((b, i) => {
-    b.setAttribute("aria-checked", String(i === state.a));
-    b.classList.toggle("is-b", state.compare && i === state.b);
+  AXES.forEach((ax, a) => {
+    const box = $("axis-" + a);
+    box.classList.toggle("active", nAx > 1 && a === state.ax);
+    box.querySelectorAll(".chip").forEach((b, i) => {
+      b.setAttribute("aria-checked", String(i === state.sel[a]));
+      b.classList.toggle("is-b", state.compare && a === state.ax && i === state.b);
+    });
   });
+  $("kmax").textContent = Math.min(nOf(state.ax), 9);
+  $("knoun").textContent = AX.nouns;
   const v = $("viewer");
   v.style.aspectRatio = cam.aspect || "2.4";
   v.style.setProperty("--pos", state.pos + "%");
   const lt = LIGHTS[state.light].label.toLowerCase();
-  $("imgA").src = src(A, cam); $("imgA").alt = `${cam.label} with ${A.label}, ${lt}`;
-  $("imgB").src = src(B, cam); $("imgB").alt = `${cam.label} with ${B.label}, ${lt}`;
+  $("imgA").src = src(state.sel, cam); $("imgA").alt = `${cam.label} with ${names(state.sel)}, ${lt}`;
+  $("imgB").src = src(selB, cam); $("imgB").alt = `${cam.label} with ${names(selB)}, ${lt}`;
   $("layerB").hidden = $("handle").hidden = $("tagB").hidden = !state.compare;
-  $("tagA").textContent = state.compare ? "A · " + A.label : A.label;
-  $("tagB").textContent = "B · " + B.label;
+  $("tagA").textContent = state.compare ? "A · " + names(state.sel) : names(state.sel);
+  $("tagB").textContent = "B · " + names(selB);
   $("camNote").textContent = `${cam.label}: ${cam.note}`;
-  $("sheetKind").textContent = `${A.kind} · ${A.tag}`;
-  $("sheetName").textContent = A.label;
-  $("sheetSpecs").innerHTML = A.specs.map((s) => `<li>${s}</li>`).join("");
-  $("sheetLink").innerHTML = A.link ? `<a href="${A.link}" target="_blank" rel="noopener">Product page</a>` : "";
+  $("sheetBody").innerHTML = state.sel.map((i, a) => {
+    const o = AXES[a].options[i];
+    return `<div class="part"><div><p class="label">${nAx > 1 ? AXES[a].label + " · " : ""}${o.kind} · ${o.tag}</p>
+      <h2>${o.label}</h2></div><ul>${o.specs.map((s) => `<li>${s}</li>`).join("")}</ul>
+      ${o.link ? `<div><a href="${o.link}" target="_blank" rel="noopener">Product page</a></div>` : ""}</div>`;
+  }).join("");
+  $("cmpSel").innerHTML = AX.options.map((o, i) => `<option value="${i}">${o.label}</option>`).join("");
+  $("cmpSel").setAttribute("aria-label", "Second " + AX.noun);
   $("cmpOn").checked = state.compare;
   $("cmpSel").value = String(state.b);
   $("wipePos").value = state.pos; $("wipePos").disabled = !state.compare;
+  const others = state.sel.map((i, a) => (a === state.ax ? null : AXES[a].options[i].label)).filter(Boolean);
+  $("stripLabel").textContent = `All ${AX.nouns} in this view` + (others.length ? ` (with ${others.join(", ")})` : "");
   $("strip").innerHTML = "";
-  DATA.options.forEach((o, i) => {
+  AX.options.forEach((o, i) => {
+    const sel = withAx(state.sel, state.ax, i);
     const t = document.createElement("button");
-    t.type = "button"; t.className = "thumb"; t.setAttribute("aria-current", String(i === state.a));
-    t.innerHTML = `<img src="${src(o, cam, true)}" alt="${cam.label} with ${o.label}" loading="lazy"
+    t.type = "button"; t.className = "thumb"; t.setAttribute("aria-current", String(i === state.sel[state.ax]));
+    t.innerHTML = `<img src="${src(sel, cam, true)}" alt="${cam.label} with ${names(sel)}" loading="lazy"
       style="aspect-ratio:${cam.aspect || 2.4}"><span>${o.label}</span>`;
-    t.addEventListener("click", () => { set({ a: i }); $("viewer").scrollIntoView({ block: "nearest", behavior: "smooth" }); });
+    t.addEventListener("click", () => { set({ sel }); $("viewer").scrollIntoView({ block: "nearest", behavior: "smooth" }); });
     $("strip").append(t);
   });
   preload(state.cam);
@@ -260,7 +297,7 @@ function render() {
 
 $("cmpOn").addEventListener("change", (e) => set({ compare: e.target.checked }));
 $("cmpSel").addEventListener("change", (e) => set({ b: Number(e.target.value), compare: true }));
-$("wipePos").addEventListener("input", (e) => { state.pos = Number(e.target.value); $("viewer").style.setProperty("--pos", state.pos + "%"); store.set("thresholdcmp", state); });
+$("wipePos").addEventListener("input", (e) => { state.pos = Number(e.target.value); $("viewer").style.setProperty("--pos", state.pos + "%"); store.set("thresholdcmp2", state); });
 
 let dragging = false;
 function drag(e) {
@@ -270,14 +307,16 @@ function drag(e) {
 }
 $("viewer").addEventListener("pointerdown", (e) => { if (!state.compare) return; dragging = true; $("viewer").setPointerCapture(e.pointerId); drag(e); });
 $("viewer").addEventListener("pointermove", (e) => { if (dragging) drag(e); });
-$("viewer").addEventListener("pointerup", () => { if (dragging) { dragging = false; store.set("thresholdcmp", state); } });
+$("viewer").addEventListener("pointerup", () => { if (dragging) { dragging = false; store.set("thresholdcmp2", state); } });
 
 document.addEventListener("keydown", (e) => {
   if (e.target.closest("select, input")) return;
-  const k = e.key;
-  if (/^[1-9]$/.test(k) && Number(k) <= nOpt) set({ a: Number(k) - 1 });
-  else if (k === "ArrowRight") set({ a: (state.a + 1) % nOpt });
-  else if (k === "ArrowLeft") set({ a: (state.a + nOpt - 1) % nOpt });
+  const k = e.key, a = state.ax, n = nOf(a);
+  if (/^[1-9]$/.test(k) && Number(k) <= n) set({ sel: withAx(state.sel, a, Number(k) - 1) });
+  else if (k === "ArrowRight") set({ sel: withAx(state.sel, a, (state.sel[a] + 1) % n) });
+  else if (k === "ArrowLeft") set({ sel: withAx(state.sel, a, (state.sel[a] + n - 1) % n) });
+  else if (k === "ArrowDown" && nAx > 1) set({ ax: (a + 1) % nAx });
+  else if (k === "ArrowUp" && nAx > 1) set({ ax: (a + nAx - 1) % nAx });
   else if (k === "]") set({ cam: (state.cam + 1) % nCam });
   else if (k === "[") set({ cam: (state.cam + nCam - 1) % nCam });
   else if (k === "c" || k === "C") set({ compare: !state.compare });
