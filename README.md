@@ -16,6 +16,7 @@
 - [Back Patio: Deck or Stone](https://andrewbuyck.github.io/kitchen-remodel/patio/): 6 patio options, 4 views
 - [Kitchen: The Light Over the Island](https://andrewbuyck.github.io/kitchen-remodel/island_pendant/): 3 pendants, 3 views
 - [Back Door: Wall Lights](https://andrewbuyck.github.io/kitchen-remodel/patio_lights/): 3 lights, 2 views
+- [Back Porch: A Covered Seat by the Doors](https://andrewbuyck.github.io/kitchen-remodel/porch/): 2 porches × 5 covers, 4 views
 
 Photoreal Blender Cycles renders of the new kitchen, dining room, powder room and garage, and the living room's furnishings. Each page compares finish options
 with identical cameras and lighting. They're renders, not photographs: colours are close but not calibrated.
