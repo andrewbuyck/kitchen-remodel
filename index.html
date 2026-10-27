@@ -13,8 +13,23 @@
 body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 "IBM Plex Sans", system-ui, sans-serif; }
 main { max-width: 1100px; margin: 0 auto; padding: 40px 16px 56px; }
 h1 { font: 700 clamp(28px, 5vw, 40px)/1.1 Archivo, sans-serif; margin: 0 0 8px; letter-spacing: -0.01em; }
-.lede { color: var(--muted); max-width: 62ch; margin: 0 0 32px; }
-.grid { display: grid; gap: 20px; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); }
+.lede { color: var(--muted); max-width: 62ch; margin: 0 0 20px; }
+.tools { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 12px; }
+.tools button { font: 500 14px "IBM Plex Sans", system-ui, sans-serif; color: var(--ink); background: var(--card);
+                border: 1px solid var(--line); border-radius: 999px; padding: 6px 14px; cursor: pointer; }
+.tools button:hover, .tools button:focus-visible { border-color: var(--accent); }
+details.room { border-top: 1px solid var(--line); }
+details.room > summary { list-style: none; cursor: pointer; display: flex; align-items: center; gap: 12px;
+                         padding: 20px 0 16px; }
+details.room > summary::-webkit-details-marker { display: none; }
+details.room > summary::before { content: ""; flex: none; width: 8px; height: 8px; margin: 0 4px 0 2px;
+                                 border-right: 2px solid var(--accent); border-bottom: 2px solid var(--accent);
+                                 transform: rotate(-45deg); transition: transform .15s ease; }
+details.room[open] > summary::before { transform: rotate(45deg); }
+.room-name { font: 700 clamp(22px, 3.4vw, 28px)/1.15 Archivo, sans-serif; letter-spacing: -0.01em; }
+.room-count { color: var(--muted); font-size: 14px; }
+details.room > .grid { padding-bottom: 28px; }
+.grid { display: grid; gap: 20px; grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 1fr)); }
 a.card { display: block; background: var(--card); border: 1px solid var(--line); border-radius: 14px; overflow: hidden;
          color: inherit; text-decoration: none; transition: transform .15s ease, border-color .15s ease; }
 a.card:hover, a.card:focus-visible { transform: translateY(-2px); border-color: var(--accent); }
@@ -23,6 +38,7 @@ a.card img { display: block; width: 100%; aspect-ratio: 16 / 9; object-fit: cove
 h2 { font: 700 20px/1.2 Archivo, sans-serif; margin: 0 0 6px; }
 .meta { color: var(--accent); font-size: 13px; font-weight: 500; margin: 0 0 8px; text-transform: uppercase; letter-spacing: .06em; }
 .body p { margin: 0; color: var(--muted); font-size: 15px; }
+.body p.what { color: var(--ink); font-size: 14px; margin: 0 0 8px; }
 footer { color: var(--muted); font-size: 13px; margin-top: 36px; max-width: 70ch; }
 </style>
 </head>
@@ -30,154 +46,218 @@ footer { color: var(--muted); font-size: 13px; margin-top: 36px; max-width: 70ch
 <main>
   <h1>Kitchen Remodel Renders</h1>
   <p class="lede">Photoreal renders of the new kitchen, dining room, powder room and garage, and the living room's
-  furnishings and stair, built from the floor plan, site measurements, the ordered appliances and the chosen finishes. Each page compares options with identical cameras and lighting.</p>
-  <div class="grid">
-    <a class="card" href="floors/">
-      <img src="floors/img/floor_tile_palomino__CAM_WallA_OverIsland_t.jpg" alt="" loading="lazy">
-      <div class="body">
-        <p class="meta">6 floors · 6 views</p>
-        <h2>Kitchen Floor Comparison</h2>
-        <p>One floor runs through the kitchen and dining room, and into the powder room unless it gets its own mosaic (the powder room floor page). The living room keeps its existing red oak in every option (its colour retuned to your new photos: it no longer drifts green). New: Modena Natural from the store; the Suttongrove, the red oak strip and the two oak placeholders are gone.</p>
-      </div>
-    </a>
-    <a class="card" href="wallpaper/">
-      <img src="wallpaper/img/powder_luca_bloom_black--wainscot_emerald_48__CAM_PowderDoor_t.jpg" alt="" loading="lazy">
-      <div class="body">
-        <p class="meta">4 wallpapers × 10 lower walls · 2 views</p>
-        <h2>Powder Room: Walls</h2>
-        <p>Three Painted Paper wallpapers at their true repeat size, or paint, each over a lower wall: your earlier picks (the green zellige, two beadboards) and your two store tiles, LuxCraft Antique Pearl and Camden Emerald, three ways: half height all round, the vanity wall alone floor to ceiling (a backsplash as a feature wall, the mirror hung on the tile), or both. The room is now 30 in deep; the WallBeyond walnut mirror, Bailey vanity in Vogue Green, frosted lower sash.</p>
-      </div>
-    </a>
-    <a class="card" href="threshold/">
-      <img src="threshold/img/threshold_stone__CAM_Threshold_t.jpg" alt="" loading="lazy">
-      <div class="body">
-        <p class="meta">2 thresholds · 2 views</p>
-        <h2>Living Room Threshold</h2>
-        <p>Where the new kitchen floor (Daltile Palomino here) meets the living room&#x27;s existing red oak, in the Wall B opening: a bevelled saddle across the 4½ in wall, in red oak or honed Taj Mahal.</p>
-      </div>
-    </a>
-    <a class="card" href="counters/">
-      <img src="counters/img/counter_perla_santana_honed__CAM_Counters_t.jpg" alt="" loading="lazy">
-      <div class="body">
-        <p class="meta">5 stones · 4 views</p>
-        <h2>Countertop Stone</h2>
-        <p>The counters, island top and full-height slab backsplash in one stone. Taj Mahal is the current pick; your two Earthstone quartzites; Perla Santana is shown honed and polished (your second link repeated the first, and Earthstone lists the same slab both ways).</p>
-      </div>
-    </a>
-    <a class="card" href="stools/">
-      <img src="stools/img/stools_kunzent__CAM_Stools_t.jpg" alt="" loading="lazy">
-      <div class="body">
-        <p class="meta">3 stools · 3 views</p>
-        <h2>Counter Stools</h2>
-        <p>Five stools at the island&#x27;s seating side. The TYBOATLE rattan stool is the current pick, beside the CIMOTA and your new KUNZENT bentwood stool in beige (the VATROS is gone).</p>
-      </div>
-    </a>
-    <a class="card" href="dining/">
-      <img src="dining/img/dining_banquette_upholstered--dining_rug--dining_light_drum__CAM_DiningCorner_t.jpg" alt="" loading="lazy">
-      <div class="body">
-        <p class="meta">4 seating options × 3 wall options × 3 rug options × 3 lights · 2 views</p>
-        <h2>Dining Room: Corner Bench, Walls, Rug and Light</h2>
-        <p>Your table in its current spot or tucked into an L banquette in the corner opposite the powder room, from your pins; the benches now run to 6 in from the door to the garage (in the west wall now) and about 2 ft further along the windows. Mix the bench, wall paneling, rug and a light over the table; the evening view shows what the light does. New: a double-pedestal table and a washable rosette rug. Paneling colours have their own page.</p>
-      </div>
-    </a>
-    <a class="card" href="dining_paneling/">
-      <img src="dining_paneling/img/dining_paneling_full--dining_paint_sage__CAM_DiningCorner_t.jpg" alt="" loading="lazy">
-      <div class="body">
-        <p class="meta">2 paneling options × 5 colours · 2 views</p>
-        <h2>Dining Room: Paneling Colour</h2>
-        <p>The V-groove paneling in five paints, floor to ceiling or to 54 in under a ledge, in one styled corner: the Shaker banquette, the rug and the cone pendant. In Blender, the Kitchen panel&#x27;s Dining room section has a colour picker for any other paint.</p>
-      </div>
-    </a>
-    <a class="card" href="garage/">
-      <img src="garage/img/garage_organizer_wall__CAM_GarageLanding_t.jpg" alt="" loading="lazy">
-      <div class="body">
-        <p class="meta">3 layouts × 3 workout set-ups × 2 cars · 3 views</p>
-        <h2>Garage: Layout, Workout Corner and Car</h2>
-        <p>The fit-out as it stands (not final): a 30 in landing, three steps down with shoe drawers in the risers, your YUKON cabinet, gym rubber, a Peloton facing a TV on the north wall by the steps, a ceiling pull-up bar and LED shop lights. Try the back wall three ways: the organizer facing the door (as now), the organizer back against the wall on a longer platform (your first layout), or a mudroom bench and beadboard like your new photo. Swap the workout gear and park a Caterham Seven. The epoxy and the lights have their own page.</p>
-      </div>
-    </a>
-    <a class="card" href="garage_floor/">
-      <img src="garage_floor/img/garage_epoxy_tan__CAM_GarageLanding_t.jpg" alt="" loading="lazy">
-      <div class="body">
-        <p class="meta">3 floors × 2 lights · 3 views</p>
-        <h2>Garage: Epoxy Floor and Lights</h2>
-        <p>The garage as it stands (the organizer facing the door, the Peloton, the YUKON by the landing) with the three epoxy flake blends and the two light fixtures.</p>
-      </div>
-    </a>
-    <a class="card" href="living/">
-      <img src="living/img/base__CAM_LivingTV_t.jpg" alt="" loading="lazy">
-      <div class="body">
-        <p class="meta">4 sofas × 2 armchair options × 2 sideboards × 2 curtains · 3 views</p>
-        <h2>Living Room: Sofa, Rug, TV Wall and Curtains</h2>
-        <p>The living room furnished with the new ideas: the bay window back with its window seat and cushions, a Frame TV where today&#x27;s TV hangs with a sideboard under it, curtains on a brass rod across the bay, Kirsten&#x27;s Loloi Jules rug under the sofa, and new: an armchair in the empty corner by the bay (my pick, see its notes). Compare the 7th Avenue in desert taupe (the olive and sand are gone, as is the Medley), the Joybird Sebastian, your new Koala Wanda and your current couch. The floor&#x27;s colour is retuned to your photos. The TV shows a placeholder picture in Art Mode.</p>
-      </div>
-    </a>
-    <a class="card" href="stair/">
-      <img src="stair/img/stair_panels--stair_runner__CAM_StairUp_t.jpg" alt="" loading="lazy">
-      <div class="body">
-        <p class="meta">2 wall options × 2 runner options · 3 views</p>
-        <h2>Living Room: Stair Paneling and Runner</h2>
-        <p>Your two stair photos on the stair to the second floor: box-panel moulding up the stairwell wall (a grid stepping with the stair, as in the first photo) and on the knee wall&#x27;s living side (raking panels), all in one warm cream; and a waterfall kilim runner with brass rods at every riser, with a matching piece on the landing step (from the second photo). The runner&#x27;s pattern is drawn for the model: no product matches the photo.</p>
-      </div>
-    </a>
-    <a class="card" href="powder_vanity/">
-      <img src="powder_vanity/img/powder_vanity_dacion__CAM_Powder_t.jpg" alt="" loading="lazy">
-      <div class="body">
-        <p class="meta">7 vanities × 2 toilets · 2 views</p>
-        <h2>Powder Room: Vanity and Toilet</h2>
-        <p>The room is now modelled 30 in deep (your correction: it was 24½ in, read off the plan, where 24½ is the vanity wall between two fillers). Seven vanities in the same spot on the east wall and the two toilets you found on the west wall, each vanity with your new Aolemi faucet in antique gold and the WallBeyond walnut mirror, now in the 24 × 36 in size your link selects (3 in clear each side on the 30 in wall). Your faucet is a 4 in centerset (three holes): the Dacion and Gerharda tops come drilled for it, the one-hole tops get two more holes drilled (you&#x27;re fine with that), and only the Garvee can&#x27;t take it. Each toilet stands at its own rough-in: the drain moves to suit, or the Cadet comes in a 12 in version. The clear space in front of the toilet is in each one&#x27;s notes: 21 in is the usual minimum.</p>
-      </div>
-    </a>
-    <a class="card" href="powder_floor/">
-      <img src="powder_floor/img/powder_floor_hex__CAM_PowderFloor_t.jpg" alt="" loading="lazy">
-      <div class="body">
-        <p class="meta">3 floors · 2 views</p>
-        <h2>Powder Room: Its Own Floor</h2>
-        <p>The powder room with its own floor instead of the kitchen&#x27;s carried through: your two mosaics from the store, with a honed Taj Mahal saddle under the door where they meet the dining room&#x27;s floor. The kitchen floor here is the placeholder 24 in tile; on the floors page the powder room follows each kitchen option.</p>
-      </div>
-    </a>
-    <a class="card" href="powder_door/">
-      <img src="powder_door/img/powder_door_swing__CAM_PowderDoorDining_t.jpg" alt="" loading="lazy">
-      <div class="body">
-        <p class="meta">3 doors · 3 views</p>
-        <h2>Powder Room: Door</h2>
-        <p>The 28-inch swing door, or a 24-inch ARK DESIGN pocket door that slides into the wall toward the toilet (shown half open so its panels read). The room is now 30 in deep; the pocket still fits along the wall exactly as in the drawing for the builders. Bailey vanity, the WallBeyond walnut mirror (the only mirror now), painted walls.</p>
-      </div>
-    </a>
-    <a class="card" href="patio/">
-      <img src="patio/img/patio_none__CAM_Patio_t.jpg" alt="" loading="lazy">
-      <div class="body">
-        <p class="meta">6 patio options · 4 views</p>
-        <h2>Back Patio: Deck or Stone</h2>
-        <p>Ideas for the space off the dining room&#x27;s new French doors, built on your rough shape along the back wall (about 11 × 16 ft, plus a 5 ft strip past the doors) and stretched 2–3 ft toward the yard where steps or a table need it. With the A/C moved to the north side, every option now runs right into the sheltered corner by the bump-out, and all stay clear of the playset. The furniture is generic: it&#x27;s there to show how each layout lives.</p>
-      </div>
-    </a>
-    <a class="card" href="island_pendant/">
-      <img src="island_pendant/img/island_pendant_linear__CAM_WallA_OverIsland_t.jpg" alt="" loading="lazy">
-      <div class="body">
-        <p class="meta">12 pendants · 3 views</p>
-        <h2>Kitchen: The Light Over the Island</h2>
-        <p>The lights over the island: the brass linear pendant the model has had as a placeholder, the Rennnsan Remy, the GoYeel and the Savoy House; and your four new single pendants, each hung two and three across the island (a pair at the quarter points, a trio at the middles of the thirds), all with their lowest point 30 in over the island and the same total light as the current pendant. The evening view shows how each one lights it.</p>
-      </div>
-    </a>
-    <a class="card" href="patio_lights/">
-      <img src="patio_lights/img/patio_sconce_cattleya__CAM_PatioSconces_t.jpg" alt="" loading="lazy">
-      <div class="body">
-        <p class="meta">3 lights · 2 views</p>
-        <h2>Back Door: Wall Lights</h2>
-        <p>Three outdoor wall lights, a pair either side of the dining room&#x27;s French doors, about 67 inches up. They&#x27;re dusk-to-dawn, so they&#x27;re off by day and on in the evening view.</p>
-      </div>
-    </a>
-    <a class="card" href="porch/">
-      <img src="porch/img/patio_deck_porch--porch_cover_flat__CAM_PorchYard_t.jpg" alt="" loading="lazy">
-      <div class="body">
-        <p class="meta">2 porches × 7 covers · 4 views</p>
-        <h2>Back Porch: A Covered Seat by the Doors</h2>
-        <p>Somewhere to sit just outside the dining room&#x27;s French doors, under a roof. Two chairs sit side by side beside the door that gets used every day, its swing and the path out to the steps kept clear. Each cover is shown over two porches, one hardwood deck and one raised bluestone. Both sit one step (about 7½ in) below the doors: building code allows that at a door that isn&#x27;t the house&#x27;s main exit, and it buys headroom under every cover without touching the roof. A new roof can&#x27;t sit higher than the existing eave because the upstairs windows are just above it, so the flat roof and the gable keep their eaves at the old roof line; with the step down and a beam flush with the ceiling, the flat roof gets about 8 ft of headroom. It&#x27;s shown 11 ft deep over the full porch and 8 ft deep over a porch shortened to match. The gable can also open into its pediment with a curved arch (about 9 ft 5 in at the centre). The gable hips back into the old roof and stops short of the solar panels, so none of them need to move. The two aluminium pergolas are off-the-shelf kits. Each cover also brings string lights out to two cedar posts on the lawn. In the evening views the porch and string lights are on (they run dusk to dawn).</p>
-      </div>
-    </a>
-  </div>
+  furnishings and stair, built from the floor plan, site measurements, the ordered appliances and the chosen finishes. Each page compares options with identical cameras and lighting.
+  Grouped by room; within a room the pages run in the order their decisions are needed on site (framing and rough-in
+  first, then floors and finishes, furniture last).</p>
+  <div class="tools"><button type="button" id="expand">Expand all</button><button type="button" id="collapse">Collapse all</button></div>
+  <details class="room" data-room="kitchen" open>
+    <summary><span class="room-name">Kitchen</span><span class="room-count">5 pages</span></summary>
+    <div class="grid">
+      <a class="card" href="island_pendant/">
+        <img src="island_pendant/img/island_pendant_linear__CAM_WallA_OverIsland_t.jpg" alt="" loading="lazy">
+        <div class="body">
+          <p class="meta">1 · Electrical rough-in</p>
+          <h2>Kitchen: The Light Over the Island</h2>
+          <p class="what">12 pendants · 3 views</p>
+          <p>The lights over the island: the brass linear pendant the model has had as a placeholder, the Rennnsan Remy, the GoYeel and the Savoy House; and your four new single pendants, each hung two and three across the island (a pair at the quarter points, a trio at the middles of the thirds), all with their lowest point 30 in over the island and the same total light as the current pendant. The evening view shows how each one lights it.</p>
+        </div>
+      </a>
+      <a class="card" href="floors/">
+        <img src="floors/img/floor_tile_palomino__CAM_WallA_OverIsland_t.jpg" alt="" loading="lazy">
+        <div class="body">
+          <p class="meta">2 · Flooring</p>
+          <h2>Kitchen Floor Comparison</h2>
+          <p class="what">6 floors · 6 views</p>
+          <p>One floor runs through the kitchen and dining room, and into the powder room unless it gets its own mosaic (the powder room floor page). The living room keeps its existing red oak in every option (its colour retuned to your new photos: it no longer drifts green). New: Modena Natural from the store; the Suttongrove, the red oak strip and the two oak placeholders are gone.</p>
+        </div>
+      </a>
+      <a class="card" href="threshold/">
+        <img src="threshold/img/threshold_stone__CAM_Threshold_t.jpg" alt="" loading="lazy">
+        <div class="body">
+          <p class="meta">3 · Flooring</p>
+          <h2>Living Room Threshold</h2>
+          <p class="what">2 thresholds · 2 views</p>
+          <p>Where the new kitchen floor (Daltile Palomino here) meets the living room&#x27;s existing red oak, in the Wall B opening: a bevelled saddle across the 4½ in wall, in red oak or honed Taj Mahal.</p>
+        </div>
+      </a>
+      <a class="card" href="counters/">
+        <img src="counters/img/counter_perla_santana_honed__CAM_Counters_t.jpg" alt="" loading="lazy">
+        <div class="body">
+          <p class="meta">4 · After the cabinets</p>
+          <h2>Countertop Stone</h2>
+          <p class="what">5 stones · 4 views</p>
+          <p>The counters, island top and full-height slab backsplash in one stone. Taj Mahal is the current pick; your two Earthstone quartzites; Perla Santana is shown honed and polished (your second link repeated the first, and Earthstone lists the same slab both ways).</p>
+        </div>
+      </a>
+      <a class="card" href="stools/">
+        <img src="stools/img/stools_kunzent__CAM_Stools_t.jpg" alt="" loading="lazy">
+        <div class="body">
+          <p class="meta">5 · Furniture</p>
+          <h2>Counter Stools</h2>
+          <p class="what">3 stools · 3 views</p>
+          <p>Five stools at the island&#x27;s seating side. The TYBOATLE rattan stool is the current pick, beside the CIMOTA and your new KUNZENT bentwood stool in beige (the VATROS is gone).</p>
+        </div>
+      </a>
+    </div>
+  </details>
+  <details class="room" data-room="powder-room" open>
+    <summary><span class="room-name">Powder room</span><span class="room-count">4 pages</span></summary>
+    <div class="grid">
+      <a class="card" href="powder_door/">
+        <img src="powder_door/img/powder_door_swing__CAM_PowderDoorDining_t.jpg" alt="" loading="lazy">
+        <div class="body">
+          <p class="meta">1 · Framing</p>
+          <h2>Powder Room: Door</h2>
+          <p class="what">3 doors · 3 views</p>
+          <p>The 28-inch swing door, or a 24-inch ARK DESIGN pocket door that slides into the wall toward the toilet (shown half open so its panels read). The room is now 30 in deep; the pocket still fits along the wall exactly as in the drawing for the builders. Bailey vanity, the WallBeyond walnut mirror (the only mirror now), painted walls.</p>
+        </div>
+      </a>
+      <a class="card" href="powder_vanity/">
+        <img src="powder_vanity/img/powder_vanity_dacion__CAM_Powder_t.jpg" alt="" loading="lazy">
+        <div class="body">
+          <p class="meta">2 · Plumbing rough-in</p>
+          <h2>Powder Room: Vanity and Toilet</h2>
+          <p class="what">7 vanities × 2 toilets · 2 views</p>
+          <p>The room is now modelled 30 in deep (your correction: it was 24½ in, read off the plan, where 24½ is the vanity wall between two fillers). Seven vanities in the same spot on the east wall and the two toilets you found on the west wall, each vanity with your new Aolemi faucet in antique gold and the WallBeyond walnut mirror, now in the 24 × 36 in size your link selects (3 in clear each side on the 30 in wall). Your faucet is a 4 in centerset (three holes): the Dacion and Gerharda tops come drilled for it, the one-hole tops get two more holes drilled (you&#x27;re fine with that), and only the Garvee can&#x27;t take it. Each toilet stands at its own rough-in: the drain moves to suit, or the Cadet comes in a 12 in version. The clear space in front of the toilet is in each one&#x27;s notes: 21 in is the usual minimum.</p>
+        </div>
+      </a>
+      <a class="card" href="powder_floor/">
+        <img src="powder_floor/img/powder_floor_hex__CAM_PowderFloor_t.jpg" alt="" loading="lazy">
+        <div class="body">
+          <p class="meta">3 · Flooring</p>
+          <h2>Powder Room: Its Own Floor</h2>
+          <p class="what">3 floors · 2 views</p>
+          <p>The powder room with its own floor instead of the kitchen&#x27;s carried through: your two mosaics from the store, with a honed Taj Mahal saddle under the door where they meet the dining room&#x27;s floor. The kitchen floor here is the placeholder 24 in tile; on the floors page the powder room follows each kitchen option.</p>
+        </div>
+      </a>
+      <a class="card" href="wallpaper/">
+        <img src="wallpaper/img/powder_luca_bloom_black--wainscot_emerald_48__CAM_PowderDoor_t.jpg" alt="" loading="lazy">
+        <div class="body">
+          <p class="meta">4 · Wall finishes</p>
+          <h2>Powder Room: Walls</h2>
+          <p class="what">4 wallpapers × 10 lower walls · 2 views</p>
+          <p>Three Painted Paper wallpapers at their true repeat size, or paint, each over a lower wall: your earlier picks (the green zellige, two beadboards) and your two store tiles, LuxCraft Antique Pearl and Camden Emerald, three ways: half height all round, the vanity wall alone floor to ceiling (a backsplash as a feature wall, the mirror hung on the tile), or both. The room is now 30 in deep; the WallBeyond walnut mirror, Bailey vanity in Vogue Green, frosted lower sash.</p>
+        </div>
+      </a>
+    </div>
+  </details>
+  <details class="room" data-room="dining-room" open>
+    <summary><span class="room-name">Dining room</span><span class="room-count">2 pages</span></summary>
+    <div class="grid">
+      <a class="card" href="dining/">
+        <img src="dining/img/dining_banquette_upholstered--dining_rug--dining_light_drum__CAM_DiningCorner_t.jpg" alt="" loading="lazy">
+        <div class="body">
+          <p class="meta">1 · Rough-in (the light), then furniture</p>
+          <h2>Dining Room: Corner Bench, Walls, Rug and Light</h2>
+          <p class="what">4 seating options × 3 wall options × 3 rug options × 3 lights · 2 views</p>
+          <p>Your table in its current spot or tucked into an L banquette in the corner opposite the powder room, from your pins; the benches now run to 6 in from the door to the garage (in the west wall now) and about 2 ft further along the windows. Mix the bench, wall paneling, rug and a light over the table; the evening view shows what the light does. New: a double-pedestal table and a washable rosette rug. Paneling colours have their own page.</p>
+        </div>
+      </a>
+      <a class="card" href="dining_paneling/">
+        <img src="dining_paneling/img/dining_paneling_full--dining_paint_sage__CAM_DiningCorner_t.jpg" alt="" loading="lazy">
+        <div class="body">
+          <p class="meta">2 · Trim and paint</p>
+          <h2>Dining Room: Paneling Colour</h2>
+          <p class="what">2 paneling options × 5 colours · 2 views</p>
+          <p>The V-groove paneling in five paints, floor to ceiling or to 54 in under a ledge, in one styled corner: the Shaker banquette, the rug and the cone pendant. In Blender, the Kitchen panel&#x27;s Dining room section has a colour picker for any other paint.</p>
+        </div>
+      </a>
+    </div>
+  </details>
+  <details class="room" data-room="living-room-and-stair" open>
+    <summary><span class="room-name">Living room and stair</span><span class="room-count">2 pages</span></summary>
+    <div class="grid">
+      <a class="card" href="stair/">
+        <img src="stair/img/stair_panels--stair_runner__CAM_StairUp_t.jpg" alt="" loading="lazy">
+        <div class="body">
+          <p class="meta">1 · Trim and finishes</p>
+          <h2>Living Room: Stair Paneling and Runner</h2>
+          <p class="what">2 wall options × 2 runner options · 3 views</p>
+          <p>Your two stair photos on the stair to the second floor: box-panel moulding up the stairwell wall (a grid stepping with the stair, as in the first photo) and on the knee wall&#x27;s living side (raking panels), all in one warm cream; and a waterfall kilim runner with brass rods at every riser, with a matching piece on the landing step (from the second photo). The runner&#x27;s pattern is drawn for the model: no product matches the photo.</p>
+        </div>
+      </a>
+      <a class="card" href="living/">
+        <img src="living/img/base__CAM_LivingTV_t.jpg" alt="" loading="lazy">
+        <div class="body">
+          <p class="meta">2 · Furniture</p>
+          <h2>Living Room: Sofa, Rug, TV Wall and Curtains</h2>
+          <p class="what">4 sofas × 2 armchair options × 2 sideboards × 2 curtains · 3 views</p>
+          <p>The living room furnished with the new ideas: the bay window back with its window seat and cushions, a Frame TV where today&#x27;s TV hangs with a sideboard under it, curtains on a brass rod across the bay, Kirsten&#x27;s Loloi Jules rug under the sofa, and new: an armchair in the empty corner by the bay (my pick, see its notes). Compare the 7th Avenue in desert taupe (the olive and sand are gone, as is the Medley), the Joybird Sebastian, your new Koala Wanda and your current couch. The floor&#x27;s colour is retuned to your photos. The TV shows a placeholder picture in Art Mode.</p>
+        </div>
+      </a>
+    </div>
+  </details>
+  <details class="room" data-room="garage" open>
+    <summary><span class="room-name">Garage</span><span class="room-count">2 pages</span></summary>
+    <div class="grid">
+      <a class="card" href="garage_floor/">
+        <img src="garage_floor/img/garage_epoxy_tan__CAM_GarageLanding_t.jpg" alt="" loading="lazy">
+        <div class="body">
+          <p class="meta">1 · Rough-in (lights), then the floor</p>
+          <h2>Garage: Epoxy Floor and Lights</h2>
+          <p class="what">3 floors × 2 lights · 3 views</p>
+          <p>The garage as it stands (the organizer facing the door, the Peloton, the YUKON by the landing) with the three epoxy flake blends and the two light fixtures.</p>
+        </div>
+      </a>
+      <a class="card" href="garage/">
+        <img src="garage/img/garage_organizer_wall__CAM_GarageLanding_t.jpg" alt="" loading="lazy">
+        <div class="body">
+          <p class="meta">2 · Fit-out</p>
+          <h2>Garage: Layout, Workout Corner and Car</h2>
+          <p class="what">3 layouts × 3 workout set-ups × 2 cars · 3 views</p>
+          <p>The fit-out as it stands (not final): a 30 in landing, three steps down with shoe drawers in the risers, your YUKON cabinet, gym rubber, a Peloton facing a TV on the north wall by the steps, a ceiling pull-up bar and LED shop lights. Try the back wall three ways: the organizer facing the door (as now), the organizer back against the wall on a longer platform (your first layout), or a mudroom bench and beadboard like your new photo. Swap the workout gear and park a Caterham Seven. The epoxy and the lights have their own page.</p>
+        </div>
+      </a>
+    </div>
+  </details>
+  <details class="room" data-room="outside" open>
+    <summary><span class="room-name">Outside</span><span class="room-count">3 pages</span></summary>
+    <div class="grid">
+      <a class="card" href="porch/">
+        <img src="porch/img/patio_deck_porch--porch_cover_flat__CAM_PorchYard_t.jpg" alt="" loading="lazy">
+        <div class="body">
+          <p class="meta">1 · Structure</p>
+          <h2>Back Porch: A Covered Seat by the Doors</h2>
+          <p class="what">2 porches × 7 covers · 4 views</p>
+          <p>Somewhere to sit just outside the dining room&#x27;s French doors, under a roof. Two chairs sit side by side beside the door that gets used every day, its swing and the path out to the steps kept clear. Each cover is shown over two porches, one hardwood deck and one raised bluestone. Both sit one step (about 7½ in) below the doors: building code allows that at a door that isn&#x27;t the house&#x27;s main exit, and it buys headroom under every cover without touching the roof. A new roof can&#x27;t sit higher than the existing eave because the upstairs windows are just above it, so the flat roof and the gable keep their eaves at the old roof line; with the step down and a beam flush with the ceiling, the flat roof gets about 8 ft of headroom. It&#x27;s shown 11 ft deep over the full porch and 8 ft deep over a porch shortened to match. The gable can also open into its pediment with a curved arch (about 9 ft 5 in at the centre). The gable hips back into the old roof and stops short of the solar panels, so none of them need to move. The two aluminium pergolas are off-the-shelf kits. Each cover also brings string lights out to two cedar posts on the lawn. In the evening views the porch and string lights are on (they run dusk to dawn).</p>
+        </div>
+      </a>
+      <a class="card" href="patio_lights/">
+        <img src="patio_lights/img/patio_sconce_cattleya__CAM_PatioSconces_t.jpg" alt="" loading="lazy">
+        <div class="body">
+          <p class="meta">2 · Electrical rough-in</p>
+          <h2>Back Door: Wall Lights</h2>
+          <p class="what">3 lights · 2 views</p>
+          <p>Three outdoor wall lights, a pair either side of the dining room&#x27;s French doors, about 67 inches up. They&#x27;re dusk-to-dawn, so they&#x27;re off by day and on in the evening view.</p>
+        </div>
+      </a>
+      <a class="card" href="patio/">
+        <img src="patio/img/patio_none__CAM_Patio_t.jpg" alt="" loading="lazy">
+        <div class="body">
+          <p class="meta">3 · Landscaping</p>
+          <h2>Back Patio: Deck or Stone</h2>
+          <p class="what">6 patio options · 4 views</p>
+          <p>Ideas for the space off the dining room&#x27;s new French doors, built on your rough shape along the back wall (about 11 × 16 ft, plus a 5 ft strip past the doors) and stretched 2–3 ft toward the yard where steps or a table need it. With the A/C moved to the north side, every option now runs right into the sheltered corner by the bump-out, and all stay clear of the playset. The furniture is generic: it&#x27;s there to show how each layout lives.</p>
+        </div>
+      </a>
+    </div>
+  </details>
   <footer>Blender Cycles renders, not photographs. Colours are close but not calibrated: judge real samples in the room.</footer>
 </main>
+<script>
+(function () {
+  var rooms = document.querySelectorAll("details.room");
+  rooms.forEach(function (d) {
+    var key = "room:" + d.dataset.room;
+    try { if (localStorage.getItem(key) === "closed") d.open = false; } catch (e) {}
+    d.addEventListener("toggle", function () {
+      try { localStorage.setItem(key, d.open ? "open" : "closed"); } catch (e) {}
+    });
+  });
+  function all(open) { rooms.forEach(function (d) { d.open = open; }); }
+  document.getElementById("expand").addEventListener("click", function () { all(true); });
+  document.getElementById("collapse").addEventListener("click", function () { all(false); });
+})();
+</script>
 </body>
 </html>
