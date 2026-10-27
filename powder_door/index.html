@@ -1,4 +1,4 @@
-<title>Powder Room: Door and Mirror</title>
+<title>Powder Room: Door</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@112,600;112,700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
@@ -37,7 +37,14 @@ body { background: var(--bg); color: var(--ink); font: 400 15px/1.55 var(--body)
 .wrap { max-width: 1480px; margin: 0 auto; padding-inline: clamp(16px, 3vw, 40px); padding-block: 28px 48px;
         display: grid; gap: 22px; }
 header { display: grid; gap: 6px; }
-.eyebrow { font: 500 12px/1 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.eyebrow { font: 500 12px/1 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted);
+           display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; }
+/* the way back to the site's landing page (Andrew 2026-10-26: "navigate to the main page from any of the sub-pages") */
+.home { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; text-transform: none;
+        letter-spacing: 0; font: 600 14px/1 var(--body); color: var(--ink); background: var(--surface);
+        border: 1px solid var(--line); text-decoration: none; }
+.home:hover, .home:focus-visible { border-color: var(--accent); color: var(--accent); }
+footer .home { justify-self: start; margin-top: 6px; }
 h1 { font: 700 clamp(28px, 4vw, 44px)/1.05 var(--display); margin: 0; text-wrap: balance; letter-spacing: -.01em; }
 .sub { margin: 0; color: var(--muted); max-width: 70ch; }
 .bar { display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: center; justify-content: space-between; }
@@ -118,8 +125,8 @@ footer code { font: 400 12px/1.4 var(--mono); }
 
 <div class="wrap">
   <header>
-    <div class="eyebrow">Kitchen remodel 2026 · finish study</div>
-    <h1 id="title">Powder Room: Door and Mirror</h1>
+    <div class="eyebrow"><a class="home" href="../">&larr; All pages</a><span>Kitchen remodel 2026 · finish study</span></div>
+    <h1 id="title">Powder Room: Door</h1>
     <p class="sub" id="subtitle"></p>
   </header>
 
@@ -163,7 +170,7 @@ footer code { font: 400 12px/1.4 var(--mono); }
 </div>
 
 <script>
-const DATA = {"title": "Powder Room: Door and Mirror", "subtitle": "The 28-inch swing door, or a 24-inch ARK DESIGN pocket door that slides into the wall toward the toilet (shown half open so its panels read); and the placeholder mirror or the WallBeyond walnut mirror. Bailey vanity in Vogue Green, painted walls.", "cameras": [{"id": "CAM_PowderDoorDining", "label": "From the dining room", "note": "The door wall: the casing, the slab half open in its split jambs, the wall the pocket hides in", "aspect": 1.0667}, {"id": "CAM_Powder", "label": "Vanity wall", "note": "From above the toilet, looking east: the mirror over the vanity, the door on the right", "aspect": 0.8}, {"id": "CAM_PowderDoor", "label": "In the doorway", "note": "Standing in the dining room at the opening, looking at the window wall", "aspect": 1.1248}], "axes": [{"label": "Door", "noun": "door", "nouns": "doors", "options": [{"variant": "powder_door_swing", "label": "28 in swing door (as now)", "kind": "eightdoors 2-panel Shaker, swings out into the dining room", "tag": "Current", "swatch": "#F2F1EB", "specs": ["28 × 80 × 1⅜ in primed solid core, hinged on the west jamb", "Needs about 28 in of dining-room floor to swing", "Shown open"]}, {"variant": "powder_door_pocket_5lite", "label": "ARK DESIGN 24 in pocket, 5-panel", "kind": "Five recessed Shaker panels (\"5-Lite\" is the layout: no glass)", "tag": "New", "swatch": "#F2F1EB", "specs": ["24 × 80 × 1⅜ in primed solid-core MDF, soft-close", "Kit: frame, track, hangers; split jambs, casing and pulls bought separately", "Nothing can mount on the pocket's wall (switch, paper holder)", "$368 at Home Depot (PDFSC-WGXB-24)"], "link": "https://www.homedepot.com/p/332974694"}, {"variant": "powder_door_pocket_blank", "label": "ARK DESIGN 24 in pocket, 1-panel", "kind": "ARK's \"Blank\": one tall recessed Shaker panel", "tag": "New", "swatch": "#F2F1EB", "specs": ["24 × 80 × 1⅜ in primed solid-core MDF, soft-close", "Same frame kit as the 5-panel", "Home Depot PDF-1X-24N"], "link": "https://www.homedepot.com/p/343530487"}]}, {"label": "Mirror", "noun": "mirror", "nouns": "mirrors", "options": [{"variant": "base", "label": "Placeholder 20 × 28, green frame", "kind": "The model's stand-in", "tag": "Current", "swatch": "#4A6249", "specs": ["Square frame in the vanity's green", "Bottom at 42 in"]}, {"variant": "powder_mirror_wallbeyond", "label": "WallBeyond, walnut, notched corners", "kind": "Wood frame with concave quarter-circle corners", "tag": "New", "swatch": "#5C3A21", "specs": ["Shown 20 × 30: the link's 24 × 36 would leave ¼ in each side on the 24½ in wall", "1 in deep, D-rings (portrait or landscape)", "$118 (24 × 36)"], "link": "https://www.amazon.com/dp/B0BTPF4SHQ?th=1"}]}], "lights": [{"id": "day", "label": "Day", "settings": {"quality": "draft", "samples": 256, "resolution": [1920, 1800], "rendered_at": "2026-10-14T09:09:05", "white_balance": 3800.0, "exposure": 1.4, "recessed_kelvin": 3000, "hdri": "resting_place"}}], "settings": {"quality": "draft", "samples": 256, "resolution": [1920, 1800], "rendered_at": "2026-10-14T09:09:05", "white_balance": 3800.0, "exposure": 1.4, "recessed_kelvin": 3000, "hdri": "resting_place"}};
+const DATA = {"title": "Powder Room: Door", "subtitle": "The 28-inch swing door, or a 24-inch ARK DESIGN pocket door that slides into the wall toward the toilet (shown half open so its panels read). The room is now 30 in deep; the pocket still fits along the wall exactly as in the drawing for the builders. Bailey vanity, the WallBeyond walnut mirror (the only mirror now), painted walls.", "cameras": [{"id": "CAM_PowderDoorDining", "label": "From the dining room", "note": "The door wall: the casing, the slab half open in its split jambs, the wall the pocket hides in", "aspect": 1.0667}, {"id": "CAM_Powder", "label": "Vanity wall", "note": "From above the toilet, looking east: the mirror over the vanity, the door on the right", "aspect": 0.8}, {"id": "CAM_PowderDoor", "label": "In the doorway", "note": "Standing in the dining room at the opening, looking at the window wall", "aspect": 1.1248}], "axes": [{"label": "Door", "noun": "door", "nouns": "doors", "options": [{"variant": "powder_door_swing", "label": "28 in swing door (as now)", "kind": "eightdoors 2-panel Shaker, swings out into the dining room", "tag": "Current", "swatch": "#F2F1EB", "specs": ["28 × 80 × 1⅜ in primed solid core, hinged on the west jamb", "Needs about 28 in of dining-room floor to swing", "Shown open"]}, {"variant": "powder_door_pocket_5lite", "label": "ARK DESIGN 24 in pocket, 5-panel", "kind": "Five recessed Shaker panels (\"5-Lite\" is the layout: no glass)", "tag": "Option", "swatch": "#F2F1EB", "specs": ["24 × 80 × 1⅜ in primed solid-core MDF, soft-close", "Kit: frame, track, hangers; split jambs, casing and pulls bought separately", "Nothing can mount on the pocket's wall (switch, paper holder)", "$368 at Home Depot (PDFSC-WGXB-24)"], "link": "https://www.homedepot.com/p/332974694"}, {"variant": "powder_door_pocket_blank", "label": "ARK DESIGN 24 in pocket, 1-panel", "kind": "ARK's \"Blank\": one tall recessed Shaker panel", "tag": "Option", "swatch": "#F2F1EB", "specs": ["24 × 80 × 1⅜ in primed solid-core MDF, soft-close", "Same frame kit as the 5-panel", "Home Depot PDF-1X-24N"], "link": "https://www.homedepot.com/p/343530487"}]}], "lights": [{"id": "day", "label": "Day", "settings": {"quality": "draft", "samples": 256, "resolution": [1920, 1800], "rendered_at": "2026-10-27T08:10:38", "white_balance": 3800.0, "exposure": 1.4, "recessed_kelvin": 3000, "hdri": "resting_place"}}], "settings": {"quality": "draft", "samples": 256, "resolution": [1920, 1800], "rendered_at": "2026-10-27T08:10:38", "white_balance": 3800.0, "exposure": 1.4, "recessed_kelvin": 3000, "hdri": "resting_place"}};
 const $ = (id) => document.getElementById(id);
 const store = { get(k, d) { try { const v = localStorage.getItem(k); return v === null ? d : JSON.parse(v); } catch (e) { return d; } },
                 set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} } };
@@ -332,11 +339,12 @@ function footer() {
   const e = (ev && ev.settings) || {};
   const when = s.rendered_at ? new Date(s.rendered_at).toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" }) : "";
   $("foot").innerHTML = `<span>Blender Cycles, ${s.samples || "?"} samples at ${(s.resolution || []).join(" × ")} px${when ? ", rendered " + when : ""}.
-    Every option uses the same cameras, lights and exposure; only the option changes.</span>
+    Every door uses the same cameras, lights and exposure; only the door changes.</span>
     <span>Day: daylight from the <code>${s.hdri || "HDRI"}</code> sky through the windows (early-afternoon sun from the SSW)
     plus the 3000 K recessed and under-cabinet LEDs, white balance ${s.white_balance || "?"} K, exposure +${s.exposure ?? "?"}.
     ${ev ? `Evening: blue hour outside, the same fixtures, white balance ${e.white_balance || "?"} K, exposure +${e.exposure ?? "?"}.` : ""}
-    Colours are close, not calibrated: judge against real samples in the room.</span>`;
+    Colours are close, not calibrated: judge against real samples in the room.</span>
+    <a class="home" href="../">&larr; All pages</a>`;
 }
 footer();
 render();

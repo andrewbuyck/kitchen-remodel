@@ -37,7 +37,14 @@ body { background: var(--bg); color: var(--ink); font: 400 15px/1.55 var(--body)
 .wrap { max-width: 1480px; margin: 0 auto; padding-inline: clamp(16px, 3vw, 40px); padding-block: 28px 48px;
         display: grid; gap: 22px; }
 header { display: grid; gap: 6px; }
-.eyebrow { font: 500 12px/1 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.eyebrow { font: 500 12px/1 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted);
+           display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; }
+/* the way back to the site's landing page (Andrew 2026-10-26: "navigate to the main page from any of the sub-pages") */
+.home { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; text-transform: none;
+        letter-spacing: 0; font: 600 14px/1 var(--body); color: var(--ink); background: var(--surface);
+        border: 1px solid var(--line); text-decoration: none; }
+.home:hover, .home:focus-visible { border-color: var(--accent); color: var(--accent); }
+footer .home { justify-self: start; margin-top: 6px; }
 h1 { font: 700 clamp(28px, 4vw, 44px)/1.05 var(--display); margin: 0; text-wrap: balance; letter-spacing: -.01em; }
 .sub { margin: 0; color: var(--muted); max-width: 70ch; }
 .bar { display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: center; justify-content: space-between; }
@@ -118,7 +125,7 @@ footer code { font: 400 12px/1.4 var(--mono); }
 
 <div class="wrap">
   <header>
-    <div class="eyebrow">Kitchen remodel 2026 · finish study</div>
+    <div class="eyebrow"><a class="home" href="../">&larr; All pages</a><span>Kitchen remodel 2026 · finish study</span></div>
     <h1 id="title">Counter Stools</h1>
     <p class="sub" id="subtitle"></p>
   </header>
@@ -163,7 +170,7 @@ footer code { font: 400 12px/1.4 var(--mono); }
 </div>
 
 <script>
-const DATA = {"title": "Counter Stools", "subtitle": "Five stools at the island's seating side. The TYBOATLE rattan stool is the current pick; your two new candidates in the same spots.", "cameras": [{"id": "CAM_Stools", "label": "Seating side", "note": "From the pantry corner (Wall B and the pantry cut away): the stools in profile", "aspect": 1.4286}, {"id": "CAM_WallA_OverIsland", "label": "Over the island", "note": "Wall B cut away, as in the builder's render: the stools' backs in the foreground", "aspect": 2.4}, {"id": "CAM_Living", "label": "From the living room", "note": "Through the Wall B opening", "aspect": 1.25}], "axes": [{"label": "Stool", "noun": "stool", "nouns": "stools", "options": [{"variant": "stools_tyboatle", "label": "TYBOATLE 26 in rattan swivel stool, white", "kind": "Current selection", "tag": "Current", "swatch": "#E1C38E", "specs": ["Seat 25.2 in, back 36 in; cane back, faux-leather seat, light-oak-print steel frame", "Swivels"], "link": "https://www.amazon.com/dp/B0DYNY259J"}, {"variant": "stools_cimota", "label": "CIMOTA 24.5 in ladder-back wood stool, natural", "kind": "Solid wood, swivel", "tag": "New", "swatch": "#CBA97C", "specs": ["Seat 24.3 in (dished solid wood, no cushion), back 38.5 in", "Ladder back with a curved top rail; H-stretcher footrest; swivels with its back", "About 11.7 in clearance under the 36 in counter: ideal. Also in walnut and black"], "link": "https://www.amazon.com/dp/B0GVDS3BVF"}, {"variant": "stools_vatros", "label": "VATROS faux-leather bucket stool, walnut brown", "kind": "Upholstered, fixed", "tag": "New", "swatch": "#7E4A2E", "specs": ["Cognac PU leather seat and wrap-around back on black steel legs", "Seat height 27 in: only about 9 in under the 36 in counter (10–12 in is the norm); there's no counter-height version", "Doesn't swivel"], "link": "https://www.amazon.com/dp/B0F2FLKK7Z"}]}], "lights": [{"id": "day", "label": "Day", "settings": {"quality": "draft", "samples": 256, "resolution": [1920, 1344], "rendered_at": "2026-10-01T00:20:02", "white_balance": 3800.0, "exposure": 1.4, "recessed_kelvin": 3000, "hdri": "resting_place"}}], "settings": {"quality": "draft", "samples": 256, "resolution": [1920, 1344], "rendered_at": "2026-10-01T00:20:02", "white_balance": 3800.0, "exposure": 1.4, "recessed_kelvin": 3000, "hdri": "resting_place"}};
+const DATA = {"title": "Counter Stools", "subtitle": "Five stools at the island's seating side. The TYBOATLE rattan stool is the current pick, beside the CIMOTA and your new KUNZENT bentwood stool in beige (the VATROS is gone).", "cameras": [{"id": "CAM_Stools", "label": "Seating side", "note": "From the pantry corner (Wall B and the pantry cut away): the stools in profile", "aspect": 1.4286}, {"id": "CAM_WallA_OverIsland", "label": "Over the island", "note": "Wall B cut away, as in the builder's render: the stools' backs in the foreground", "aspect": 2.4}, {"id": "CAM_Living", "label": "From the living room", "note": "Through the Wall B opening", "aspect": 1.25}], "axes": [{"label": "Stool", "noun": "stool", "nouns": "stools", "options": [{"variant": "stools_tyboatle", "label": "TYBOATLE 26 in rattan swivel stool, white", "kind": "Current selection", "tag": "Current", "swatch": "#E1C38E", "specs": ["Seat 25.2 in, back 36 in; cane back, faux-leather seat, light-oak-print steel frame", "Swivels"], "link": "https://www.amazon.com/dp/B0DYNY259J"}, {"variant": "stools_cimota", "label": "CIMOTA 24.5 in ladder-back wood stool, natural", "kind": "Solid wood, swivel", "tag": "New", "swatch": "#CBA97C", "specs": ["Seat 24.3 in (dished solid wood, no cushion), back 38.5 in", "Ladder back with a curved top rail; H-stretcher footrest; swivels with its back", "About 11.7 in clearance under the 36 in counter: ideal. Also in walnut and black"], "link": "https://www.amazon.com/dp/B0GVDS3BVF"}, {"variant": "stools_kunzent", "label": "KUNZENT 26 in bentwood swivel stool, walnut and beige", "kind": "Walnut bentwood, swivel", "tag": "New", "swatch": "#6A4430", "specs": ["Seat 26 in, a 2.6 in cream faux-leather cushion; a low walnut bent-ply back with a grip slot, 31.8 in high", "Four bentwood legs, a chrome footrest ring; swivels", "10 in clearance under the 36 in counter (10–12 in is the norm)", "$439 for four (Walnut Beige, 26 in)"], "link": "https://www.amazon.com/dp/B0F6L7XZBD"}]}], "lights": [{"id": "day", "label": "Day", "settings": {"quality": "draft", "samples": 256, "resolution": [1920, 1344], "rendered_at": "2026-10-27T09:24:06", "white_balance": 3800.0, "exposure": 1.4, "recessed_kelvin": 3000, "hdri": "resting_place"}}], "settings": {"quality": "draft", "samples": 256, "resolution": [1920, 1344], "rendered_at": "2026-10-27T09:24:06", "white_balance": 3800.0, "exposure": 1.4, "recessed_kelvin": 3000, "hdri": "resting_place"}};
 const $ = (id) => document.getElementById(id);
 const store = { get(k, d) { try { const v = localStorage.getItem(k); return v === null ? d : JSON.parse(v); } catch (e) { return d; } },
                 set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} } };
@@ -336,7 +343,8 @@ function footer() {
     <span>Day: daylight from the <code>${s.hdri || "HDRI"}</code> sky through the windows (early-afternoon sun from the SSW)
     plus the 3000 K recessed and under-cabinet LEDs, white balance ${s.white_balance || "?"} K, exposure +${s.exposure ?? "?"}.
     ${ev ? `Evening: blue hour outside, the same fixtures, white balance ${e.white_balance || "?"} K, exposure +${e.exposure ?? "?"}.` : ""}
-    Colours are close, not calibrated: judge against real samples in the room.</span>`;
+    Colours are close, not calibrated: judge against real samples in the room.</span>
+    <a class="home" href="../">&larr; All pages</a>`;
 }
 footer();
 render();

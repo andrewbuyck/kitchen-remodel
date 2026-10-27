@@ -1,4 +1,4 @@
-<title>Garage: Workout Corner, Car and Floor</title>
+<title>Garage: Layout, Workout Corner and Car</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@112,600;112,700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
@@ -37,7 +37,14 @@ body { background: var(--bg); color: var(--ink); font: 400 15px/1.55 var(--body)
 .wrap { max-width: 1480px; margin: 0 auto; padding-inline: clamp(16px, 3vw, 40px); padding-block: 28px 48px;
         display: grid; gap: 22px; }
 header { display: grid; gap: 6px; }
-.eyebrow { font: 500 12px/1 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.eyebrow { font: 500 12px/1 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted);
+           display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; }
+/* the way back to the site's landing page (Andrew 2026-10-26: "navigate to the main page from any of the sub-pages") */
+.home { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; text-transform: none;
+        letter-spacing: 0; font: 600 14px/1 var(--body); color: var(--ink); background: var(--surface);
+        border: 1px solid var(--line); text-decoration: none; }
+.home:hover, .home:focus-visible { border-color: var(--accent); color: var(--accent); }
+footer .home { justify-self: start; margin-top: 6px; }
 h1 { font: 700 clamp(28px, 4vw, 44px)/1.05 var(--display); margin: 0; text-wrap: balance; letter-spacing: -.01em; }
 .sub { margin: 0; color: var(--muted); max-width: 70ch; }
 .bar { display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: center; justify-content: space-between; }
@@ -118,8 +125,8 @@ footer code { font: 400 12px/1.4 var(--mono); }
 
 <div class="wrap">
   <header>
-    <div class="eyebrow">Kitchen remodel 2026 · finish study</div>
-    <h1 id="title">Garage: Workout Corner, Car and Floor</h1>
+    <div class="eyebrow"><a class="home" href="../">&larr; All pages</a><span>Kitchen remodel 2026 · finish study</span></div>
+    <h1 id="title">Garage: Layout, Workout Corner and Car</h1>
     <p class="sub" id="subtitle"></p>
   </header>
 
@@ -138,7 +145,7 @@ footer code { font: 400 12px/1.4 var(--mono); }
     </figure>
     <div class="caption">
       <span id="camNote"></span>
-      <span><kbd>1</kbd>–<kbd id="kmax">5</kbd> <span id="knoun">workout set-ups</span> · <kbd>←</kbd> <kbd>→</kbd> step<span id="akey"> · <kbd>↑</kbd> <kbd>↓</kbd> switch list</span> · <kbd>[</kbd> <kbd>]</kbd> views<span id="lkey"> · <kbd>L</kbd> day / evening</span> · <kbd>C</kbd> compare</span>
+      <span><kbd>1</kbd>–<kbd id="kmax">5</kbd> <span id="knoun">layouts</span> · <kbd>←</kbd> <kbd>→</kbd> step<span id="akey"> · <kbd>↑</kbd> <kbd>↓</kbd> switch list</span> · <kbd>[</kbd> <kbd>]</kbd> views<span id="lkey"> · <kbd>L</kbd> day / evening</span> · <kbd>C</kbd> compare</span>
     </div>
   </section>
 
@@ -155,7 +162,7 @@ footer code { font: 400 12px/1.4 var(--mono); }
   </section>
 
   <section>
-    <p class="label" id="stripLabel">All workout set-ups in this view</p>
+    <p class="label" id="stripLabel">All layouts in this view</p>
     <div class="strip" id="strip"></div>
   </section>
 
@@ -163,7 +170,7 @@ footer code { font: 400 12px/1.4 var(--mono); }
 </div>
 
 <script>
-const DATA = {"title": "Garage: Workout Corner, Car and Floor", "subtitle": "The fit-out as it stands (not final): a 30 in landing with a coat organizer the same width, three steps down with shoe drawers in the risers, your YUKON cabinet by the landing, gym rubber, a stationary bike facing a TV on the north wall by the steps, a ceiling pull-up bar and LED shop lights. Swap the workout gear, park a Caterham Seven in one of three liveries, and try the epoxy blends and a hexagon light grid.", "cameras": [{"id": "CAM_GarageLanding", "label": "The landing", "note": "From beside the overhead door: the landing, the organizer, the cabinet and the workout corner", "aspect": 1.4286}, {"id": "CAM_GarageGym", "label": "The workout corner", "note": "From the north-west corner: the rubber floor, the workout gear, the pull-up bar and the cabinet", "aspect": 1.4286}, {"id": "CAM_GarageFromLanding", "label": "From the house door", "note": "Standing on the landing, looking across the garage at the overhead door", "aspect": 1.4286}], "axes": [{"label": "Workout gear", "noun": "workout set-up", "nouns": "workout set-ups", "options": [{"variant": "base", "label": "Stationary bike", "kind": "Facing the TV", "tag": "Current", "swatch": "#3A3D41", "specs": ["Sized like a Schwinn IC4 (49 × 21 in)", "Faces the TV on the north wall; stays put when a car is in"]}, {"variant": "garage_gym_bench", "label": "Weight bench and dumbbells", "kind": "Option", "tag": "Option", "swatch": "#141414", "specs": ["An adjustable flat/incline bench (about 53 in long) and a pair of 35 lb dumbbells"]}, {"variant": "garage_gym_yoga", "label": "Yoga", "kind": "Option", "tag": "Option", "swatch": "#58807B", "specs": ["A 72 × 24 in mat rolled out, cork blocks, a strap and a foam roller"]}]}, {"label": "Car", "noun": "car", "nouns": "cars", "options": [{"variant": "base", "label": "No car", "kind": "Workout space", "tag": "Current", "swatch": "#8E8E8B", "specs": ["The open floor"]}, {"variant": "garage_car_caterham", "label": "Caterham Seven, 485 Final Edition colours", "kind": "The kit-car plan", "tag": "Idea", "swatch": "#4E2B9C", "specs": ["Violet with a double dark stripe, carbon front wings, anthracite wheels", "Parked inside the overhead door: about 4 ft from its nose to the bike and the steps"]}, {"variant": "garage_car_caterham_620r", "label": "Caterham Seven, 620R Riviera Blue", "kind": "The kit-car plan", "tag": "Idea", "swatch": "#0A8CD0", "specs": ["Riviera Blue with orange stripes, black wheels"]}]}, {"label": "Epoxy floor", "noun": "floor", "nouns": "floors", "options": [{"variant": "base", "label": "Grey flake epoxy", "kind": "Full-broadcast flake", "tag": "Option", "swatch": "#7C7D7B", "specs": ["Grey, black and white flakes under a clear topcoat"]}, {"variant": "garage_epoxy_tan", "label": "Tan flake epoxy", "kind": "Full-broadcast flake", "tag": "Option", "swatch": "#A39684", "specs": ["Warm tan and brown flakes"]}, {"variant": "garage_epoxy_charcoal", "label": "Charcoal flake epoxy", "kind": "Full-broadcast flake", "tag": "Option", "swatch": "#4A4A4A", "specs": ["Dark charcoal flakes"]}]}, {"label": "Lights", "noun": "light", "nouns": "lights", "options": [{"variant": "base", "label": "LED shop lights", "kind": "4 ft linear", "tag": "Option", "swatch": "#F2F2EE", "specs": ["Four 4 ft LED shop lights, 4000 K"]}, {"variant": "garage_light_hex", "label": "Hexagon grid light", "kind": "Detailing-shop style", "tag": "Option", "swatch": "#F7F7F4", "specs": ["A ceiling grid of LED tubes in hexagons, 4000 K"]}]}], "lights": [{"id": "day", "label": "Day", "settings": {"quality": "draft", "samples": 256, "resolution": [1920, 1344], "rendered_at": "2026-10-07T23:53:33", "white_balance": 3800.0, "exposure": 1.4, "recessed_kelvin": 3000, "hdri": "resting_place"}}], "settings": {"quality": "draft", "samples": 256, "resolution": [1920, 1344], "rendered_at": "2026-10-07T23:53:33", "white_balance": 3800.0, "exposure": 1.4, "recessed_kelvin": 3000, "hdri": "resting_place"}};
+const DATA = {"title": "Garage: Layout, Workout Corner and Car", "subtitle": "The fit-out as it stands (not final): a 30 in landing, three steps down with shoe drawers in the risers, your YUKON cabinet, gym rubber, a Peloton facing a TV on the north wall by the steps, a ceiling pull-up bar and LED shop lights. Try the back wall three ways: the organizer facing the door (as now), the organizer back against the wall on a longer platform (your first layout), or a mudroom bench and beadboard like your new photo. Swap the workout gear and park a Caterham Seven. The epoxy and the lights have their own page.", "cameras": [{"id": "CAM_GarageLanding", "label": "The landing", "note": "From beside the overhead door: the landing, the organizer, the cabinet and the workout corner", "aspect": 1.4286}, {"id": "CAM_GarageBackWall", "label": "The back wall", "note": "From the south-west corner by the window: the back wall from the steps to the corner", "aspect": 1.4286}, {"id": "CAM_GarageFromLanding", "label": "From the house door", "note": "Standing on the landing, looking across the garage at the overhead door", "aspect": 1.4286}], "axes": [{"label": "Back wall", "noun": "layout", "nouns": "layouts", "options": [{"variant": "base", "label": "Organizer facing the door", "kind": "As it stands", "tag": "Current", "swatch": "#A2A8A6", "specs": ["The 30 × 14 in organizer on the landing's south edge, facing the door, its back to the garage", "Your YUKON on the back wall next to the landing"]}, {"variant": "garage_organizer_wall", "label": "Organizer on the wall", "kind": "Your first layout, back again", "tag": "New", "swatch": "#A2A8A6", "specs": ["The same organizer turned to face the garage, its back on the back wall just past the door's casing", "The platform carried 30 in further along the back wall at the same 30 in depth; the steps unchanged", "16 in to stand in front of it on the platform (a 12 in deep organizer would leave 18 in); a guard along the platform's open edges", "The YUKON moves to the corner by the south wall"]}, {"variant": "garage_mudroom", "label": "Mudroom bench and beadboard", "kind": "From your new photo", "tag": "New", "swatch": "#B7B1A7", "specs": ["No organizer: a 42 in open bench at floor level against the back wall, two wooden crates, a flat cushion", "Greige beadboard to 5 ft with a ledge and a row of Shaker pegs, round the corner over the steps", "A guard across the landing's open side; the YUKON in the corner", "Left out from the photo: the tall cabinet and the tilt-out shoe cabinets (no wall left for them with the YUKON; the shoe drawers in the risers stay)"]}]}, {"label": "Workout gear", "noun": "workout set-up", "nouns": "workout set-ups", "options": [{"variant": "base", "label": "Peloton", "kind": "Replaces the generic bike", "tag": "New", "swatch": "#2B2B2D", "specs": ["Facing the TV on the north wall; stays put when a car is in"]}, {"variant": "garage_gym_bench", "label": "Weight bench and dumbbells", "kind": "Option", "tag": "Option", "swatch": "#141414", "specs": ["An adjustable flat/incline bench (about 53 in long) and a pair of 35 lb dumbbells"]}, {"variant": "garage_gym_yoga", "label": "Yoga", "kind": "Option", "tag": "Option", "swatch": "#58807B", "specs": ["A 72 × 24 in mat rolled out, cork blocks, a strap and a foam roller"]}]}, {"label": "Car", "noun": "car", "nouns": "cars", "options": [{"variant": "base", "label": "No car", "kind": "Workout space", "tag": "Current", "swatch": "#8E8E8B", "specs": ["The open floor"]}, {"variant": "garage_car_caterham", "label": "Caterham Seven", "kind": "The kit-car plan, 485 Final Edition colours", "tag": "Idea", "swatch": "#4E2B9C", "specs": ["Violet with a double dark stripe, carbon front wings, anthracite wheels; backed in, centred on the door", "The other liveries (620R Riviera Blue, classic green) are in the Kitchen panel in Blender"]}]}], "lights": [{"id": "day", "label": "Day", "settings": {"quality": "quick", "samples": 128, "resolution": [1920, 1344], "rendered_at": "2026-10-27T08:53:33", "white_balance": 3800.0, "exposure": 1.4, "recessed_kelvin": 3000, "hdri": "resting_place"}}], "settings": {"quality": "quick", "samples": 128, "resolution": [1920, 1344], "rendered_at": "2026-10-27T08:53:33", "white_balance": 3800.0, "exposure": 1.4, "recessed_kelvin": 3000, "hdri": "resting_place"}};
 const $ = (id) => document.getElementById(id);
 const store = { get(k, d) { try { const v = localStorage.getItem(k); return v === null ? d : JSON.parse(v); } catch (e) { return d; } },
                 set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} } };
@@ -336,7 +343,8 @@ function footer() {
     <span>Day: daylight from the <code>${s.hdri || "HDRI"}</code> sky through the windows (early-afternoon sun from the SSW)
     plus the 3000 K recessed and under-cabinet LEDs, white balance ${s.white_balance || "?"} K, exposure +${s.exposure ?? "?"}.
     ${ev ? `Evening: blue hour outside, the same fixtures, white balance ${e.white_balance || "?"} K, exposure +${e.exposure ?? "?"}.` : ""}
-    Colours are close, not calibrated: judge against real samples in the room.</span>`;
+    Colours are close, not calibrated: judge against real samples in the room.</span>
+    <a class="home" href="../">&larr; All pages</a>`;
 }
 footer();
 render();

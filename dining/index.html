@@ -37,7 +37,14 @@ body { background: var(--bg); color: var(--ink); font: 400 15px/1.55 var(--body)
 .wrap { max-width: 1480px; margin: 0 auto; padding-inline: clamp(16px, 3vw, 40px); padding-block: 28px 48px;
         display: grid; gap: 22px; }
 header { display: grid; gap: 6px; }
-.eyebrow { font: 500 12px/1 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.eyebrow { font: 500 12px/1 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted);
+           display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; }
+/* the way back to the site's landing page (Andrew 2026-10-26: "navigate to the main page from any of the sub-pages") */
+.home { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; text-transform: none;
+        letter-spacing: 0; font: 600 14px/1 var(--body); color: var(--ink); background: var(--surface);
+        border: 1px solid var(--line); text-decoration: none; }
+.home:hover, .home:focus-visible { border-color: var(--accent); color: var(--accent); }
+footer .home { justify-self: start; margin-top: 6px; }
 h1 { font: 700 clamp(28px, 4vw, 44px)/1.05 var(--display); margin: 0; text-wrap: balance; letter-spacing: -.01em; }
 .sub { margin: 0; color: var(--muted); max-width: 70ch; }
 .bar { display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: center; justify-content: space-between; }
@@ -118,7 +125,7 @@ footer code { font: 400 12px/1.4 var(--mono); }
 
 <div class="wrap">
   <header>
-    <div class="eyebrow">Kitchen remodel 2026 · finish study</div>
+    <div class="eyebrow"><a class="home" href="../">&larr; All pages</a><span>Kitchen remodel 2026 · finish study</span></div>
     <h1 id="title">Dining Room: Corner Bench, Walls, Rug and Light</h1>
     <p class="sub" id="subtitle"></p>
   </header>
@@ -336,7 +343,8 @@ function footer() {
     <span>Day: daylight from the <code>${s.hdri || "HDRI"}</code> sky through the windows (early-afternoon sun from the SSW)
     plus the 3000 K recessed and under-cabinet LEDs, white balance ${s.white_balance || "?"} K, exposure +${s.exposure ?? "?"}.
     ${ev ? `Evening: blue hour outside, the same fixtures, white balance ${e.white_balance || "?"} K, exposure +${e.exposure ?? "?"}.` : ""}
-    Colours are close, not calibrated: judge against real samples in the room.</span>`;
+    Colours are close, not calibrated: judge against real samples in the room.</span>
+    <a class="home" href="../">&larr; All pages</a>`;
 }
 footer();
 render();
