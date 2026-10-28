@@ -4,7 +4,7 @@
 
 ### Kitchen
 
-- [Kitchen: The Light Over the Island](https://andrewbuyck.github.io/kitchen-remodel/island_pendant/): 12 pendants, 3 views (decide by: electrical rough-in)
+- [Kitchen: The Light Over the Island](https://andrewbuyck.github.io/kitchen-remodel/island_pendant/): 3 pendants, 3 views (decide by: electrical rough-in)
 - [Kitchen Floor Comparison](https://andrewbuyck.github.io/kitchen-remodel/floors/): 6 floors, 6 views (decide by: flooring)
 - [Living Room Threshold](https://andrewbuyck.github.io/kitchen-remodel/threshold/): 2 thresholds, 2 views (decide by: flooring)
 - [Countertop Stone](https://andrewbuyck.github.io/kitchen-remodel/counters/): 5 stones, 4 views (decide by: after the cabinets)
@@ -13,9 +13,9 @@
 ### Powder room
 
 - [Powder Room: Door](https://andrewbuyck.github.io/kitchen-remodel/powder_door/): 3 doors, 3 views (decide by: framing)
-- [Powder Room: Vanity and Toilet](https://andrewbuyck.github.io/kitchen-remodel/powder_vanity/): 7 vanities × 2 toilets, 2 views (decide by: plumbing rough-in)
-- [Powder Room: Its Own Floor](https://andrewbuyck.github.io/kitchen-remodel/powder_floor/): 3 floors, 2 views (decide by: flooring)
-- [Powder Room: Walls](https://andrewbuyck.github.io/kitchen-remodel/wallpaper/): 4 wallpapers × 10 lower walls, 2 views (decide by: wall finishes)
+- [Powder Room: Vanity and Toilet](https://andrewbuyck.github.io/kitchen-remodel/powder_vanity/): 3 vanities × 2 toilets, 3 views (decide by: plumbing rough-in)
+- [Powder Room: Its Own Floor](https://andrewbuyck.github.io/kitchen-remodel/powder_floor/): 3 floors, 3 views (decide by: flooring)
+- [Powder Room: Walls](https://andrewbuyck.github.io/kitchen-remodel/wallpaper/): 4 wallpapers × 10 lower walls, 3 views (decide by: wall finishes)
 
 ### Dining room
 
@@ -24,7 +24,7 @@
 
 ### Living room and stair
 
-- [Living Room: Stair Paneling and Runner](https://andrewbuyck.github.io/kitchen-remodel/stair/): 2 wall options × 2 runner options, 3 views (decide by: trim and finishes)
+- [Living Room: Stair Paneling and Runner](https://andrewbuyck.github.io/kitchen-remodel/stair/): 3 wall options × 2 runner options, 3 views (decide by: trim and finishes)
 - [Living Room: Sofa, Rug, TV Wall and Curtains](https://andrewbuyck.github.io/kitchen-remodel/living/): 4 sofas × 2 armchair options × 2 sideboards × 2 curtains, 3 views (decide by: furniture)
 
 ### Garage
