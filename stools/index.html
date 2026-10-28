@@ -1,9 +1,14 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Counter Stools</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@112,600;112,700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
 <style>
-/* Layout: one wide viewer (renders are panoramic), floor picker + spec sheet under it, all-floors strip below. */
+/* Layout: one wide viewer (renders are panoramic), floor picker + spec sheet under it, all-floors strip below; a
+   page with layout "side" (tall views) puts the viewer beside the picker instead (.stage.side). */
 :root {
   --bg: #e9e7e2;          /* pale stone, a little warm */
   --surface: #f6f5f2;
@@ -82,6 +87,25 @@ button:focus-visible, select:focus-visible, input:focus-visible { outline: 2px s
 
 .below { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 22px; align-items: start; }
 @media (max-width: 900px) { .below { grid-template-columns: minmax(0, 1fr); } }
+.stage { display: grid; gap: 22px; }
+.look > .bar { margin-bottom: 22px; }
+/* layout = "side" (comparisons.toml; the powder room's tall views, 2026-10-27): the picture beside the option lists,
+   kept in view while they scroll; on a phone it stays on top, smaller. --ar is the current view's aspect ratio. */
+.stage.side { grid-template-columns: min(58%, calc((100svh - 170px) * var(--ar, .75))) minmax(0, 1fr); align-items: start; }
+.stage.side .look { position: sticky; top: 10px; }
+.stage.side .look > .bar { margin-bottom: 10px; }
+.stage.side .below { grid-template-columns: minmax(0, 1fr); }
+.stage.side .floors { grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 1fr)); }
+.stage.side .axis + .axis { margin-top: 14px; }
+@media (max-width: 900px) {
+  .stage.side { grid-template-columns: minmax(0, 1fr); }
+  .stage.side .look { top: 0; z-index: 2; background: var(--bg); padding-block: 8px;
+                      margin-inline: calc(-1 * clamp(16px, 3vw, 40px)); padding-inline: clamp(16px, 3vw, 40px);
+                      box-shadow: 0 10px 12px -12px rgba(0, 0, 0, .35); }
+  .stage.side .viewer { width: min(100%, calc(40svh * var(--ar, .75))); margin-inline: auto; }
+  .stage.side .look > .bar { justify-content: center; }
+  .stage.side .caption { display: none; }
+}
 .label { font: 500 12px/1 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted);
          margin: 0 0 10px; }
 .floors { display: grid; gap: 6px; }
@@ -130,12 +154,12 @@ footer code { font: 400 12px/1.4 var(--mono); }
     <p class="sub" id="subtitle"></p>
   </header>
 
-  <div class="bar">
-    <nav class="views" role="tablist" aria-label="View" id="views"></nav>
-    <div class="lights" role="tablist" aria-label="Light" id="lights" hidden></div>
-  </div>
-
-  <section>
+  <div class="stage" id="stage">
+  <section class="look">
+    <div class="bar">
+      <nav class="views" role="tablist" aria-label="View" id="views"></nav>
+      <div class="lights" role="tablist" aria-label="Light" id="lights" hidden></div>
+    </div>
     <figure class="viewer" id="viewer">
       <img id="imgA" class="layer a" alt="">
       <div class="layer b" id="layerB" hidden><img id="imgB" alt=""></div>
@@ -145,7 +169,7 @@ footer code { font: 400 12px/1.4 var(--mono); }
     </figure>
     <div class="caption">
       <span id="camNote"></span>
-      <span><kbd>1</kbd>–<kbd id="kmax">5</kbd> <span id="knoun">stools</span> · <kbd>←</kbd> <kbd>→</kbd> step<span id="akey"> · <kbd>↑</kbd> <kbd>↓</kbd> switch list</span> · <kbd>[</kbd> <kbd>]</kbd> views<span id="lkey"> · <kbd>L</kbd> day / evening</span> · <kbd>C</kbd> compare</span>
+      <span class="keys"><kbd>1</kbd>–<kbd id="kmax">5</kbd> <span id="knoun">stools</span> · <kbd>←</kbd> <kbd>→</kbd> step<span id="akey"> · <kbd>↑</kbd> <kbd>↓</kbd> switch list</span> · <kbd>[</kbd> <kbd>]</kbd> views<span id="lkey"> · <kbd>L</kbd> day / evening</span> · <kbd>C</kbd> compare</span>
     </div>
   </section>
 
@@ -160,6 +184,7 @@ footer code { font: 400 12px/1.4 var(--mono); }
       </div>
     </div>
   </section>
+  </div>
 
   <section>
     <p class="label" id="stripLabel">All stools in this view</p>
@@ -170,7 +195,7 @@ footer code { font: 400 12px/1.4 var(--mono); }
 </div>
 
 <script>
-const DATA = {"title": "Counter Stools", "subtitle": "Five stools at the island's seating side. The TYBOATLE rattan stool is the current pick, beside the CIMOTA and your new KUNZENT bentwood stool in beige (the VATROS is gone).", "cameras": [{"id": "CAM_Stools", "label": "Seating side", "note": "From the pantry corner (Wall B and the pantry cut away): the stools in profile", "aspect": 1.4286}, {"id": "CAM_WallA_OverIsland", "label": "Over the island", "note": "Wall B cut away, as in the builder's render: the stools' backs in the foreground", "aspect": 2.4}, {"id": "CAM_Living", "label": "From the living room", "note": "Through the Wall B opening", "aspect": 1.25}], "axes": [{"label": "Stool", "noun": "stool", "nouns": "stools", "options": [{"variant": "stools_tyboatle", "label": "TYBOATLE 26 in rattan swivel stool, white", "kind": "Current selection", "tag": "Current", "swatch": "#E1C38E", "specs": ["Seat 25.2 in, back 36 in; cane back, faux-leather seat, light-oak-print steel frame", "Swivels"], "link": "https://www.amazon.com/dp/B0DYNY259J"}, {"variant": "stools_cimota", "label": "CIMOTA 24.5 in ladder-back wood stool, natural", "kind": "Solid wood, swivel", "tag": "New", "swatch": "#CBA97C", "specs": ["Seat 24.3 in (dished solid wood, no cushion), back 38.5 in", "Ladder back with a curved top rail; H-stretcher footrest; swivels with its back", "About 11.7 in clearance under the 36 in counter: ideal. Also in walnut and black"], "link": "https://www.amazon.com/dp/B0GVDS3BVF"}, {"variant": "stools_kunzent", "label": "KUNZENT 26 in bentwood swivel stool, walnut and beige", "kind": "Walnut bentwood, swivel", "tag": "New", "swatch": "#6A4430", "specs": ["Seat 26 in, a 2.6 in cream faux-leather cushion; a low walnut bent-ply back with a grip slot, 31.8 in high", "Four bentwood legs, a chrome footrest ring; swivels", "10 in clearance under the 36 in counter (10–12 in is the norm)", "$439 for four (Walnut Beige, 26 in)"], "link": "https://www.amazon.com/dp/B0F6L7XZBD"}]}], "lights": [{"id": "day", "label": "Day", "settings": {"quality": "draft", "samples": 256, "resolution": [1920, 1344], "rendered_at": "2026-10-27T18:11:47", "white_balance": 3800.0, "exposure": 1.4, "recessed_kelvin": 3000, "hdri": "resting_place"}}], "settings": {"quality": "draft", "samples": 256, "resolution": [1920, 1344], "rendered_at": "2026-10-27T18:11:47", "white_balance": 3800.0, "exposure": 1.4, "recessed_kelvin": 3000, "hdri": "resting_place"}};
+const DATA = {"title": "Counter Stools", "subtitle": "Five stools at the island's seating side. The TYBOATLE rattan stool is the current pick, beside the CIMOTA and your new KUNZENT bentwood stool in beige (the VATROS is gone).", "cameras": [{"id": "CAM_Stools", "label": "Seating side", "note": "From the pantry corner (Wall B and the pantry cut away): the stools in profile", "aspect": 1.4286}, {"id": "CAM_WallA_OverIsland", "label": "Over the island", "note": "Wall B cut away, as in the builder's render: the stools' backs in the foreground", "aspect": 2.4}, {"id": "CAM_Living", "label": "From the living room", "note": "Through the Wall B opening", "aspect": 1.25}], "axes": [{"label": "Stool", "noun": "stool", "nouns": "stools", "options": [{"variant": "stools_tyboatle", "label": "TYBOATLE 26 in rattan swivel stool, white", "kind": "Current selection", "tag": "Current", "swatch": "#E1C38E", "specs": ["Seat 25.2 in, back 36 in; cane back, faux-leather seat, light-oak-print steel frame", "Swivels"], "link": "https://www.amazon.com/dp/B0DYNY259J"}, {"variant": "stools_cimota", "label": "CIMOTA 24.5 in ladder-back wood stool, natural", "kind": "Solid wood, swivel", "tag": "New", "swatch": "#CBA97C", "specs": ["Seat 24.3 in (dished solid wood, no cushion), back 38.5 in", "Ladder back with a curved top rail; H-stretcher footrest; swivels with its back", "About 11.7 in clearance under the 36 in counter: ideal. Also in walnut and black"], "link": "https://www.amazon.com/dp/B0GVDS3BVF"}, {"variant": "stools_kunzent", "label": "KUNZENT 26 in bentwood swivel stool, walnut and beige", "kind": "Walnut bentwood, swivel", "tag": "New", "swatch": "#6A4430", "specs": ["Seat 26 in, a 2.6 in cream faux-leather cushion; a low walnut bent-ply back with a grip slot, 31.8 in high", "Four bentwood legs, a chrome footrest ring; swivels", "10 in clearance under the 36 in counter (10–12 in is the norm)", "$439 for four (Walnut Beige, 26 in)"], "link": "https://www.amazon.com/dp/B0F6L7XZBD"}]}], "layout": "", "lights": [{"id": "day", "label": "Day", "settings": {"quality": "draft", "samples": 256, "resolution": [1920, 1344], "rendered_at": "2026-10-27T18:11:47", "white_balance": 3800.0, "exposure": 1.4, "recessed_kelvin": 3000, "hdri": "resting_place"}}], "settings": {"quality": "draft", "samples": 256, "resolution": [1920, 1344], "rendered_at": "2026-10-27T18:11:47", "white_balance": 3800.0, "exposure": 1.4, "recessed_kelvin": 3000, "hdri": "resting_place"}};
 const $ = (id) => document.getElementById(id);
 const store = { get(k, d) { try { const v = localStorage.getItem(k); return v === null ? d : JSON.parse(v); } catch (e) { return d; } },
                 set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} } };
@@ -201,6 +226,7 @@ const fixB = () => {
 fixB();
 
 $("subtitle").textContent = DATA.subtitle;
+$("stage").classList.toggle("side", DATA.layout === "side");
 $("akey").hidden = nAx < 2;
 
 DATA.cameras.forEach((c, i) => {
@@ -269,6 +295,7 @@ function render() {
   $("knoun").textContent = AX.nouns;
   const v = $("viewer");
   v.style.aspectRatio = cam.aspect || "2.4";
+  $("stage").style.setProperty("--ar", cam.aspect || 2.4);
   v.style.setProperty("--pos", state.pos + "%");
   const lt = LIGHTS[state.light].label.toLowerCase();
   $("imgA").src = src(state.sel, cam); $("imgA").alt = `${cam.label} with ${names(state.sel)}, ${lt}`;

@@ -1,9 +1,14 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Kitchen: The Light Over the Island</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@112,600;112,700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
 <style>
-/* Layout: one wide viewer (renders are panoramic), floor picker + spec sheet under it, all-floors strip below. */
+/* Layout: one wide viewer (renders are panoramic), floor picker + spec sheet under it, all-floors strip below; a
+   page with layout "side" (tall views) puts the viewer beside the picker instead (.stage.side). */
 :root {
   --bg: #e9e7e2;          /* pale stone, a little warm */
   --surface: #f6f5f2;
@@ -82,6 +87,25 @@ button:focus-visible, select:focus-visible, input:focus-visible { outline: 2px s
 
 .below { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 22px; align-items: start; }
 @media (max-width: 900px) { .below { grid-template-columns: minmax(0, 1fr); } }
+.stage { display: grid; gap: 22px; }
+.look > .bar { margin-bottom: 22px; }
+/* layout = "side" (comparisons.toml; the powder room's tall views, 2026-10-27): the picture beside the option lists,
+   kept in view while they scroll; on a phone it stays on top, smaller. --ar is the current view's aspect ratio. */
+.stage.side { grid-template-columns: min(58%, calc((100svh - 170px) * var(--ar, .75))) minmax(0, 1fr); align-items: start; }
+.stage.side .look { position: sticky; top: 10px; }
+.stage.side .look > .bar { margin-bottom: 10px; }
+.stage.side .below { grid-template-columns: minmax(0, 1fr); }
+.stage.side .floors { grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 1fr)); }
+.stage.side .axis + .axis { margin-top: 14px; }
+@media (max-width: 900px) {
+  .stage.side { grid-template-columns: minmax(0, 1fr); }
+  .stage.side .look { top: 0; z-index: 2; background: var(--bg); padding-block: 8px;
+                      margin-inline: calc(-1 * clamp(16px, 3vw, 40px)); padding-inline: clamp(16px, 3vw, 40px);
+                      box-shadow: 0 10px 12px -12px rgba(0, 0, 0, .35); }
+  .stage.side .viewer { width: min(100%, calc(40svh * var(--ar, .75))); margin-inline: auto; }
+  .stage.side .look > .bar { justify-content: center; }
+  .stage.side .caption { display: none; }
+}
 .label { font: 500 12px/1 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted);
          margin: 0 0 10px; }
 .floors { display: grid; gap: 6px; }
@@ -130,12 +154,12 @@ footer code { font: 400 12px/1.4 var(--mono); }
     <p class="sub" id="subtitle"></p>
   </header>
 
-  <div class="bar">
-    <nav class="views" role="tablist" aria-label="View" id="views"></nav>
-    <div class="lights" role="tablist" aria-label="Light" id="lights" hidden></div>
-  </div>
-
-  <section>
+  <div class="stage" id="stage">
+  <section class="look">
+    <div class="bar">
+      <nav class="views" role="tablist" aria-label="View" id="views"></nav>
+      <div class="lights" role="tablist" aria-label="Light" id="lights" hidden></div>
+    </div>
     <figure class="viewer" id="viewer">
       <img id="imgA" class="layer a" alt="">
       <div class="layer b" id="layerB" hidden><img id="imgB" alt=""></div>
@@ -145,7 +169,7 @@ footer code { font: 400 12px/1.4 var(--mono); }
     </figure>
     <div class="caption">
       <span id="camNote"></span>
-      <span><kbd>1</kbd>–<kbd id="kmax">5</kbd> <span id="knoun">pendants</span> · <kbd>←</kbd> <kbd>→</kbd> step<span id="akey"> · <kbd>↑</kbd> <kbd>↓</kbd> switch list</span> · <kbd>[</kbd> <kbd>]</kbd> views<span id="lkey"> · <kbd>L</kbd> day / evening</span> · <kbd>C</kbd> compare</span>
+      <span class="keys"><kbd>1</kbd>–<kbd id="kmax">5</kbd> <span id="knoun">pendants</span> · <kbd>←</kbd> <kbd>→</kbd> step<span id="akey"> · <kbd>↑</kbd> <kbd>↓</kbd> switch list</span> · <kbd>[</kbd> <kbd>]</kbd> views<span id="lkey"> · <kbd>L</kbd> day / evening</span> · <kbd>C</kbd> compare</span>
     </div>
   </section>
 
@@ -160,6 +184,7 @@ footer code { font: 400 12px/1.4 var(--mono); }
       </div>
     </div>
   </section>
+  </div>
 
   <section>
     <p class="label" id="stripLabel">All pendants in this view</p>
@@ -170,7 +195,7 @@ footer code { font: 400 12px/1.4 var(--mono); }
 </div>
 
 <script>
-const DATA = {"title": "Kitchen: The Light Over the Island", "subtitle": "The lights over the island, down to your favourite: the Lucia Living Nerys 16 in milk-glass bell hung two and three across the island (a pair at the quarter points, the default now; a trio at the middles of the thirds), and the Rennnsan Remy. All have their lowest point 30 in over the island and the same total light. The brass linear placeholder, the GoYeel, the Savoy House, the Colette, the Preston and the flower pendant are gone. The evening view shows how each one lights it.", "cameras": [{"id": "CAM_WallA_OverIsland", "label": "Over the island", "note": "From the living room side: the pendant against the sink window and the hood", "aspect": 2.4}, {"id": "CAM_WallB_Pantry", "label": "From the sink", "note": "Looking west at the pantry wall: the pendant over the island's seating side", "aspect": 2.3587}, {"id": "CAM_Stools", "label": "The seating side", "note": "From the pantry corner: the pendant's height over the stools", "aspect": 1.4286}], "axes": [{"label": "Pendant", "noun": "pendant", "nouns": "pendants", "options": [{"variant": "base", "label": "Lucia Living Nerys, milk glass bell, ×2", "kind": "Your favourite: the default now", "tag": "Current", "swatch": "#EDE9E1", "specs": ["A 16 in opal milk-glass bell on a ½ in antique-brass rod; your link's variant is the milk glass (16 in, antique brass), not the matte metal in the product's title: a painted-metal shade would be the same shape", "Two at the island's quarter points, 52¼ in apart (36¼ in between the bells, 18 in in from the ends); lowest point 30 in over the island", "Modelled to the listing: 16 in across, 5 in canopy; the bell 8½ in tall (measured off the photos); hangs 30 in from the ceiling (the rod adjusts 12.2-50.2 in overall)"], "link": "https://lucialiving.com/products/nerys-nordic-minimalist-morandi-matte-metal-pendant-light?variant=46553787269272"}, {"variant": "island_pendant_nerys_3", "label": "Lucia Living Nerys, milk glass bell, ×3", "kind": "New", "tag": "New", "swatch": "#EDE9E1", "specs": ["A 16 in opal milk-glass bell on a ½ in antique-brass rod; your link's variant is the milk glass (16 in, antique brass), not the matte metal in the product's title: a painted-metal shade would be the same shape", "Three at the middles of the island's thirds, 34¾ in apart (18¾ in between the bells: tighter than the usual 24-30 in; the 10¾ in size would leave 24 in); lowest point 30 in over the island"], "link": "https://lucialiving.com/products/nerys-nordic-minimalist-morandi-matte-metal-pendant-light?variant=46553787269272"}, {"variant": "island_pendant_remy", "label": "Rennnsan Remy 2-light cone, brushed gold", "kind": "Mid-century linear", "tag": "New", "swatch": "#C9A45E", "specs": ["48 in bar, two white fabric cones (14.6 in) sitting above it on upturned arms", "Hung with its hub 30 in over the island, so the shades sit about 8 in higher than the old placeholder's", "2 × E12 candelabra bulbs (not included); about $120 on sale", "Lowe's 5017237257"], "link": "https://www.lowes.com/pd/Rennnsan-Remy-2-Light-Brushed-Gold-Mid-century-Cone-Large-Hanging-Kitchen-island-light/5017237257"}]}], "lights": [{"id": "day", "label": "Day", "settings": {"quality": "draft", "samples": 256, "resolution": [1920, 800], "rendered_at": "2026-10-27T18:04:09", "white_balance": 3800.0, "exposure": 1.4, "recessed_kelvin": 3000, "hdri": "resting_place"}}, {"id": "evening", "label": "Evening", "settings": {"quality": "draft", "samples": 256, "resolution": [1920, 800], "rendered_at": "2026-10-27T18:07:57", "white_balance": 3100.0, "exposure": 2.4, "recessed_kelvin": 3000, "hdri": "resting_place"}}], "settings": {"quality": "draft", "samples": 256, "resolution": [1920, 800], "rendered_at": "2026-10-27T18:04:09", "white_balance": 3800.0, "exposure": 1.4, "recessed_kelvin": 3000, "hdri": "resting_place"}};
+const DATA = {"title": "Kitchen: The Light Over the Island", "subtitle": "The lights over the island, down to your favourite: the Lucia Living Nerys 16 in milk-glass bell hung two and three across the island (a pair at the quarter points, the default now; a trio at the middles of the thirds), and the Rennnsan Remy. All have their lowest point 30 in over the island and the same total light. The brass linear placeholder, the GoYeel, the Savoy House, the Colette, the Preston and the flower pendant are gone. The evening view shows how each one lights it.", "cameras": [{"id": "CAM_WallA_OverIsland", "label": "Over the island", "note": "From the living room side: the pendant against the sink window and the hood", "aspect": 2.4}, {"id": "CAM_WallB_Pantry", "label": "From the sink", "note": "Looking west at the pantry wall: the pendant over the island's seating side", "aspect": 2.3587}, {"id": "CAM_Stools", "label": "The seating side", "note": "From the pantry corner: the pendant's height over the stools", "aspect": 1.4286}], "axes": [{"label": "Pendant", "noun": "pendant", "nouns": "pendants", "options": [{"variant": "base", "label": "Lucia Living Nerys, milk glass bell, ×2", "kind": "Your favourite: the default now", "tag": "Current", "swatch": "#EDE9E1", "specs": ["A 16 in opal milk-glass bell on a ½ in antique-brass rod; your link's variant is the milk glass (16 in, antique brass), not the matte metal in the product's title: a painted-metal shade would be the same shape", "Two at the island's quarter points, 52¼ in apart (36¼ in between the bells, 18 in in from the ends); lowest point 30 in over the island", "Modelled to the listing: 16 in across, 5 in canopy; the bell 8½ in tall (measured off the photos); hangs 30 in from the ceiling (the rod adjusts 12.2-50.2 in overall)"], "link": "https://lucialiving.com/products/nerys-nordic-minimalist-morandi-matte-metal-pendant-light?variant=46553787269272"}, {"variant": "island_pendant_nerys_3", "label": "Lucia Living Nerys, milk glass bell, ×3", "kind": "New", "tag": "New", "swatch": "#EDE9E1", "specs": ["A 16 in opal milk-glass bell on a ½ in antique-brass rod; your link's variant is the milk glass (16 in, antique brass), not the matte metal in the product's title: a painted-metal shade would be the same shape", "Three at the middles of the island's thirds, 34¾ in apart (18¾ in between the bells: tighter than the usual 24-30 in; the 10¾ in size would leave 24 in); lowest point 30 in over the island"], "link": "https://lucialiving.com/products/nerys-nordic-minimalist-morandi-matte-metal-pendant-light?variant=46553787269272"}, {"variant": "island_pendant_remy", "label": "Rennnsan Remy 2-light cone, brushed gold", "kind": "Mid-century linear", "tag": "New", "swatch": "#C9A45E", "specs": ["48 in bar, two white fabric cones (14.6 in) sitting above it on upturned arms", "Hung with its hub 30 in over the island, so the shades sit about 8 in higher than the old placeholder's", "2 × E12 candelabra bulbs (not included); about $120 on sale", "Lowe's 5017237257"], "link": "https://www.lowes.com/pd/Rennnsan-Remy-2-Light-Brushed-Gold-Mid-century-Cone-Large-Hanging-Kitchen-island-light/5017237257"}]}], "layout": "", "lights": [{"id": "day", "label": "Day", "settings": {"quality": "draft", "samples": 256, "resolution": [1920, 800], "rendered_at": "2026-10-28T01:06:04", "white_balance": 3800.0, "exposure": 1.4, "recessed_kelvin": 3000, "hdri": "resting_place"}}, {"id": "evening", "label": "Evening", "settings": {"quality": "draft", "samples": 256, "resolution": [1920, 800], "rendered_at": "2026-10-28T01:07:26", "white_balance": 3100.0, "exposure": 2.4, "recessed_kelvin": 3000, "hdri": "resting_place"}}], "settings": {"quality": "draft", "samples": 256, "resolution": [1920, 800], "rendered_at": "2026-10-28T01:06:04", "white_balance": 3800.0, "exposure": 1.4, "recessed_kelvin": 3000, "hdri": "resting_place"}};
 const $ = (id) => document.getElementById(id);
 const store = { get(k, d) { try { const v = localStorage.getItem(k); return v === null ? d : JSON.parse(v); } catch (e) { return d; } },
                 set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} } };
@@ -201,6 +226,7 @@ const fixB = () => {
 fixB();
 
 $("subtitle").textContent = DATA.subtitle;
+$("stage").classList.toggle("side", DATA.layout === "side");
 $("akey").hidden = nAx < 2;
 
 DATA.cameras.forEach((c, i) => {
@@ -269,6 +295,7 @@ function render() {
   $("knoun").textContent = AX.nouns;
   const v = $("viewer");
   v.style.aspectRatio = cam.aspect || "2.4";
+  $("stage").style.setProperty("--ar", cam.aspect || 2.4);
   v.style.setProperty("--pos", state.pos + "%");
   const lt = LIGHTS[state.light].label.toLowerCase();
   $("imgA").src = src(state.sel, cam); $("imgA").alt = `${cam.label} with ${names(state.sel)}, ${lt}`;

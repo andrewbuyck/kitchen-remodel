@@ -1,9 +1,14 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Countertop Stone</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@112,600;112,700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
 <style>
-/* Layout: one wide viewer (renders are panoramic), floor picker + spec sheet under it, all-floors strip below. */
+/* Layout: one wide viewer (renders are panoramic), floor picker + spec sheet under it, all-floors strip below; a
+   page with layout "side" (tall views) puts the viewer beside the picker instead (.stage.side). */
 :root {
   --bg: #e9e7e2;          /* pale stone, a little warm */
   --surface: #f6f5f2;
@@ -82,6 +87,25 @@ button:focus-visible, select:focus-visible, input:focus-visible { outline: 2px s
 
 .below { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 22px; align-items: start; }
 @media (max-width: 900px) { .below { grid-template-columns: minmax(0, 1fr); } }
+.stage { display: grid; gap: 22px; }
+.look > .bar { margin-bottom: 22px; }
+/* layout = "side" (comparisons.toml; the powder room's tall views, 2026-10-27): the picture beside the option lists,
+   kept in view while they scroll; on a phone it stays on top, smaller. --ar is the current view's aspect ratio. */
+.stage.side { grid-template-columns: min(58%, calc((100svh - 170px) * var(--ar, .75))) minmax(0, 1fr); align-items: start; }
+.stage.side .look { position: sticky; top: 10px; }
+.stage.side .look > .bar { margin-bottom: 10px; }
+.stage.side .below { grid-template-columns: minmax(0, 1fr); }
+.stage.side .floors { grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 1fr)); }
+.stage.side .axis + .axis { margin-top: 14px; }
+@media (max-width: 900px) {
+  .stage.side { grid-template-columns: minmax(0, 1fr); }
+  .stage.side .look { top: 0; z-index: 2; background: var(--bg); padding-block: 8px;
+                      margin-inline: calc(-1 * clamp(16px, 3vw, 40px)); padding-inline: clamp(16px, 3vw, 40px);
+                      box-shadow: 0 10px 12px -12px rgba(0, 0, 0, .35); }
+  .stage.side .viewer { width: min(100%, calc(40svh * var(--ar, .75))); margin-inline: auto; }
+  .stage.side .look > .bar { justify-content: center; }
+  .stage.side .caption { display: none; }
+}
 .label { font: 500 12px/1 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted);
          margin: 0 0 10px; }
 .floors { display: grid; gap: 6px; }
@@ -130,12 +154,12 @@ footer code { font: 400 12px/1.4 var(--mono); }
     <p class="sub" id="subtitle"></p>
   </header>
 
-  <div class="bar">
-    <nav class="views" role="tablist" aria-label="View" id="views"></nav>
-    <div class="lights" role="tablist" aria-label="Light" id="lights" hidden></div>
-  </div>
-
-  <section>
+  <div class="stage" id="stage">
+  <section class="look">
+    <div class="bar">
+      <nav class="views" role="tablist" aria-label="View" id="views"></nav>
+      <div class="lights" role="tablist" aria-label="Light" id="lights" hidden></div>
+    </div>
     <figure class="viewer" id="viewer">
       <img id="imgA" class="layer a" alt="">
       <div class="layer b" id="layerB" hidden><img id="imgB" alt=""></div>
@@ -145,7 +169,7 @@ footer code { font: 400 12px/1.4 var(--mono); }
     </figure>
     <div class="caption">
       <span id="camNote"></span>
-      <span><kbd>1</kbd>–<kbd id="kmax">5</kbd> <span id="knoun">stones</span> · <kbd>←</kbd> <kbd>→</kbd> step<span id="akey"> · <kbd>↑</kbd> <kbd>↓</kbd> switch list</span> · <kbd>[</kbd> <kbd>]</kbd> views<span id="lkey"> · <kbd>L</kbd> day / evening</span> · <kbd>C</kbd> compare</span>
+      <span class="keys"><kbd>1</kbd>–<kbd id="kmax">5</kbd> <span id="knoun">stones</span> · <kbd>←</kbd> <kbd>→</kbd> step<span id="akey"> · <kbd>↑</kbd> <kbd>↓</kbd> switch list</span> · <kbd>[</kbd> <kbd>]</kbd> views<span id="lkey"> · <kbd>L</kbd> day / evening</span> · <kbd>C</kbd> compare</span>
     </div>
   </section>
 
@@ -160,6 +184,7 @@ footer code { font: 400 12px/1.4 var(--mono); }
       </div>
     </div>
   </section>
+  </div>
 
   <section>
     <p class="label" id="stripLabel">All stones in this view</p>
@@ -170,7 +195,7 @@ footer code { font: 400 12px/1.4 var(--mono); }
 </div>
 
 <script>
-const DATA = {"title": "Countertop Stone", "subtitle": "The counters, island top and full-height slab backsplash in one stone. Taj Mahal is the current pick; your two Earthstone quartzites; Perla Santana is shown honed and polished (your second link repeated the first, and Earthstone lists the same slab both ways).", "cameras": [{"id": "CAM_Counters", "label": "Stone close-up", "note": "Behind the island's north-west corner: the island top, then the sink run and the range wall's slab (pendants hidden)", "aspect": 1.4286}, {"id": "CAM_WallA_OverIsland", "label": "Over the island", "note": "Wall B cut away, as in the builder's render", "lights": ["day", "evening"], "aspect": 2.4}, {"id": "CAM_WallA_Straight", "label": "Wall A", "note": "Near-elevation of the run; island and Wall B cut away", "lights": ["day"], "aspect": 2.5197}, {"id": "CAM_WallB_Pantry", "label": "Toward the pantry", "note": "Looking west across the island", "lights": ["day"], "aspect": 2.3587}], "axes": [{"label": "Stone", "noun": "stone", "nouns": "stones", "options": [{"variant": "counter_taj_mahal_polished", "label": "Taj Mahal quartzite, polished", "kind": "Current selection", "tag": "Current", "swatch": "#D6D2C8", "specs": ["Warm white with taupe and gold veining", "Polished (the finish is still an open question)", "Slab photo: Arizona Tile"]}, {"variant": "counter_taj_mahal_honed", "label": "Taj Mahal quartzite, honed", "kind": "Same stone, soft matte finish", "tag": "Option", "swatch": "#D6D2C8", "specs": ["Same slab photo, roughness of a honed surface", "Hides etching and fingerprints better than polished; reads a little lighter and flatter"]}, {"variant": "counter_perla_santana_honed", "label": "Perla Santana quartzite, honed", "kind": "Earthstone lot 683 · icy off-white, soft taupe drifts", "tag": "New", "swatch": "#D1D0D4", "specs": ["Slab 124 × 79 in; quartzite, Brazil", "Cooler and quieter than Taj Mahal: frosted crystal with two or three grey-taupe bands and thin caramel lines", "Earthstone's photo has a strong light falloff, corrected here; check the real slab"], "link": "https://earthstoneinc.com/product/perla-santana-honed-2/"}, {"variant": "counter_perla_santana_polished", "label": "Perla Santana quartzite, polished", "kind": "The same slab polished", "tag": "New", "swatch": "#D1D0D4", "specs": ["Same lot 683, listed by Earthstone polished as well", "Your second link was the honed page again; this is our best guess at the one you meant"], "link": "https://earthstoneinc.com/product/perla-santana-polish-2/"}, {"variant": "counter_london_grey_leathered", "label": "London Grey quartzite, leathered", "kind": "Earthstone lot 35804 · slate charcoal, silver striations", "tag": "New", "swatch": "#4B4F54", "specs": ["Slab 126 × 77 in; quartzite, Brazil", "Leathered: a soft sheen with a brushed relief that follows the striations", "A dark stone: the slab backsplash behind the range goes dark too"], "link": "https://earthstoneinc.com/product/london-grey-leathered/"}]}], "lights": [{"id": "day", "label": "Day", "settings": {"quality": "draft", "samples": 256, "resolution": [1920, 1344], "rendered_at": "2026-10-27T18:17:35", "white_balance": 3800.0, "exposure": 1.4, "recessed_kelvin": 3000, "hdri": "resting_place"}}, {"id": "evening", "label": "Evening", "settings": {"quality": "draft", "samples": 256, "resolution": [1920, 1344], "rendered_at": "2026-10-27T18:25:29", "white_balance": 3100.0, "exposure": 2.4, "recessed_kelvin": 3000, "hdri": "resting_place"}}], "settings": {"quality": "draft", "samples": 256, "resolution": [1920, 1344], "rendered_at": "2026-10-27T18:17:35", "white_balance": 3800.0, "exposure": 1.4, "recessed_kelvin": 3000, "hdri": "resting_place"}};
+const DATA = {"title": "Countertop Stone", "subtitle": "The counters, island top and full-height slab backsplash in one stone. Taj Mahal is the current pick; your two Earthstone quartzites; Perla Santana is shown honed and polished (your second link repeated the first, and Earthstone lists the same slab both ways).", "cameras": [{"id": "CAM_Counters", "label": "Stone close-up", "note": "Behind the island's north-west corner: the island top, then the sink run and the range wall's slab (pendants hidden)", "aspect": 1.4286}, {"id": "CAM_WallA_OverIsland", "label": "Over the island", "note": "Wall B cut away, as in the builder's render", "lights": ["day", "evening"], "aspect": 2.4}, {"id": "CAM_WallA_Straight", "label": "Wall A", "note": "Near-elevation of the run; island and Wall B cut away", "lights": ["day"], "aspect": 2.5197}, {"id": "CAM_WallB_Pantry", "label": "Toward the pantry", "note": "Looking west across the island", "lights": ["day"], "aspect": 2.3587}], "axes": [{"label": "Stone", "noun": "stone", "nouns": "stones", "options": [{"variant": "counter_taj_mahal_polished", "label": "Taj Mahal quartzite, polished", "kind": "Current selection", "tag": "Current", "swatch": "#D6D2C8", "specs": ["Warm white with taupe and gold veining", "Polished (the finish is still an open question)", "Slab photo: Arizona Tile"]}, {"variant": "counter_taj_mahal_honed", "label": "Taj Mahal quartzite, honed", "kind": "Same stone, soft matte finish", "tag": "Option", "swatch": "#D6D2C8", "specs": ["Same slab photo, roughness of a honed surface", "Hides etching and fingerprints better than polished; reads a little lighter and flatter"]}, {"variant": "counter_perla_santana_honed", "label": "Perla Santana quartzite, honed", "kind": "Earthstone lot 683 · icy off-white, soft taupe drifts", "tag": "New", "swatch": "#D1D0D4", "specs": ["Slab 124 × 79 in; quartzite, Brazil", "Cooler and quieter than Taj Mahal: frosted crystal with two or three grey-taupe bands and thin caramel lines", "Earthstone's photo has a strong light falloff, corrected here; check the real slab"], "link": "https://earthstoneinc.com/product/perla-santana-honed-2/"}, {"variant": "counter_perla_santana_polished", "label": "Perla Santana quartzite, polished", "kind": "The same slab polished", "tag": "New", "swatch": "#D1D0D4", "specs": ["Same lot 683, listed by Earthstone polished as well", "Your second link was the honed page again; this is our best guess at the one you meant"], "link": "https://earthstoneinc.com/product/perla-santana-polish-2/"}, {"variant": "counter_london_grey_leathered", "label": "London Grey quartzite, leathered", "kind": "Earthstone lot 35804 · slate charcoal, silver striations", "tag": "New", "swatch": "#4B4F54", "specs": ["Slab 126 × 77 in; quartzite, Brazil", "Leathered: a soft sheen with a brushed relief that follows the striations", "A dark stone: the slab backsplash behind the range goes dark too"], "link": "https://earthstoneinc.com/product/london-grey-leathered/"}]}], "layout": "", "lights": [{"id": "day", "label": "Day", "settings": {"quality": "draft", "samples": 256, "resolution": [1920, 1344], "rendered_at": "2026-10-28T00:53:50", "white_balance": 3800.0, "exposure": 1.4, "recessed_kelvin": 3000, "hdri": "resting_place"}}, {"id": "evening", "label": "Evening", "settings": {"quality": "draft", "samples": 256, "resolution": [1920, 1344], "rendered_at": "2026-10-28T01:00:55", "white_balance": 3100.0, "exposure": 2.4, "recessed_kelvin": 3000, "hdri": "resting_place"}}], "settings": {"quality": "draft", "samples": 256, "resolution": [1920, 1344], "rendered_at": "2026-10-28T00:53:50", "white_balance": 3800.0, "exposure": 1.4, "recessed_kelvin": 3000, "hdri": "resting_place"}};
 const $ = (id) => document.getElementById(id);
 const store = { get(k, d) { try { const v = localStorage.getItem(k); return v === null ? d : JSON.parse(v); } catch (e) { return d; } },
                 set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} } };
@@ -201,6 +226,7 @@ const fixB = () => {
 fixB();
 
 $("subtitle").textContent = DATA.subtitle;
+$("stage").classList.toggle("side", DATA.layout === "side");
 $("akey").hidden = nAx < 2;
 
 DATA.cameras.forEach((c, i) => {
@@ -269,6 +295,7 @@ function render() {
   $("knoun").textContent = AX.nouns;
   const v = $("viewer");
   v.style.aspectRatio = cam.aspect || "2.4";
+  $("stage").style.setProperty("--ar", cam.aspect || 2.4);
   v.style.setProperty("--pos", state.pos + "%");
   const lt = LIGHTS[state.light].label.toLowerCase();
   $("imgA").src = src(state.sel, cam); $("imgA").alt = `${cam.label} with ${names(state.sel)}, ${lt}`;

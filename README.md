@@ -13,9 +13,8 @@
 ### Powder room
 
 - [Powder Room: Door](https://andrewbuyck.github.io/kitchen-remodel/powder_door/): 3 doors, 3 views (decide by: framing)
-- [Powder Room: Vanity and Toilet](https://andrewbuyck.github.io/kitchen-remodel/powder_vanity/): 3 vanities × 2 toilets, 3 views (decide by: plumbing rough-in)
-- [Powder Room: Its Own Floor](https://andrewbuyck.github.io/kitchen-remodel/powder_floor/): 3 floors, 3 views (decide by: flooring)
-- [Powder Room: Walls](https://andrewbuyck.github.io/kitchen-remodel/wallpaper/): 4 wallpapers × 10 lower walls, 3 views (decide by: wall finishes)
+- [Powder Room: Toilet](https://andrewbuyck.github.io/kitchen-remodel/powder_toilet/): 2 toilets, 1 view (decide by: plumbing rough-in)
+- [Powder Room: Walls, Floor and Vanity](https://andrewbuyck.github.io/kitchen-remodel/powder/): 4 wall finishes × 10 lower walls × 3 floors × 3 vanities, 2 views (decide by: rough-in (the vanity), then tile and paper)
 
 ### Dining room
 
@@ -25,7 +24,7 @@
 ### Living room and stair
 
 - [Living Room: Stair Paneling and Runner](https://andrewbuyck.github.io/kitchen-remodel/stair/): 3 wall options × 2 runner options, 3 views (decide by: trim and finishes)
-- [Living Room: Sofa, Rug, TV Wall and Curtains](https://andrewbuyck.github.io/kitchen-remodel/living/): 4 sofas × 2 armchair options × 2 sideboards × 2 curtains, 3 views (decide by: furniture)
+- [Living Room: Sofa, Rug, TV Wall and Curtains](https://andrewbuyck.github.io/kitchen-remodel/living/): 4 sofas × 3 armchair options × 2 sideboards × 2 curtains, 3 views (decide by: furniture)
 
 ### Garage
 

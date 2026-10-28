@@ -1,9 +1,14 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Garage: Layout, Workout Corner and Car</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@112,600;112,700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
 <style>
-/* Layout: one wide viewer (renders are panoramic), floor picker + spec sheet under it, all-floors strip below. */
+/* Layout: one wide viewer (renders are panoramic), floor picker + spec sheet under it, all-floors strip below; a
+   page with layout "side" (tall views) puts the viewer beside the picker instead (.stage.side). */
 :root {
   --bg: #e9e7e2;          /* pale stone, a little warm */
   --surface: #f6f5f2;
@@ -82,6 +87,25 @@ button:focus-visible, select:focus-visible, input:focus-visible { outline: 2px s
 
 .below { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 22px; align-items: start; }
 @media (max-width: 900px) { .below { grid-template-columns: minmax(0, 1fr); } }
+.stage { display: grid; gap: 22px; }
+.look > .bar { margin-bottom: 22px; }
+/* layout = "side" (comparisons.toml; the powder room's tall views, 2026-10-27): the picture beside the option lists,
+   kept in view while they scroll; on a phone it stays on top, smaller. --ar is the current view's aspect ratio. */
+.stage.side { grid-template-columns: min(58%, calc((100svh - 170px) * var(--ar, .75))) minmax(0, 1fr); align-items: start; }
+.stage.side .look { position: sticky; top: 10px; }
+.stage.side .look > .bar { margin-bottom: 10px; }
+.stage.side .below { grid-template-columns: minmax(0, 1fr); }
+.stage.side .floors { grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 1fr)); }
+.stage.side .axis + .axis { margin-top: 14px; }
+@media (max-width: 900px) {
+  .stage.side { grid-template-columns: minmax(0, 1fr); }
+  .stage.side .look { top: 0; z-index: 2; background: var(--bg); padding-block: 8px;
+                      margin-inline: calc(-1 * clamp(16px, 3vw, 40px)); padding-inline: clamp(16px, 3vw, 40px);
+                      box-shadow: 0 10px 12px -12px rgba(0, 0, 0, .35); }
+  .stage.side .viewer { width: min(100%, calc(40svh * var(--ar, .75))); margin-inline: auto; }
+  .stage.side .look > .bar { justify-content: center; }
+  .stage.side .caption { display: none; }
+}
 .label { font: 500 12px/1 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted);
          margin: 0 0 10px; }
 .floors { display: grid; gap: 6px; }
@@ -130,12 +154,12 @@ footer code { font: 400 12px/1.4 var(--mono); }
     <p class="sub" id="subtitle"></p>
   </header>
 
-  <div class="bar">
-    <nav class="views" role="tablist" aria-label="View" id="views"></nav>
-    <div class="lights" role="tablist" aria-label="Light" id="lights" hidden></div>
-  </div>
-
-  <section>
+  <div class="stage" id="stage">
+  <section class="look">
+    <div class="bar">
+      <nav class="views" role="tablist" aria-label="View" id="views"></nav>
+      <div class="lights" role="tablist" aria-label="Light" id="lights" hidden></div>
+    </div>
     <figure class="viewer" id="viewer">
       <img id="imgA" class="layer a" alt="">
       <div class="layer b" id="layerB" hidden><img id="imgB" alt=""></div>
@@ -145,7 +169,7 @@ footer code { font: 400 12px/1.4 var(--mono); }
     </figure>
     <div class="caption">
       <span id="camNote"></span>
-      <span><kbd>1</kbd>–<kbd id="kmax">5</kbd> <span id="knoun">layouts</span> · <kbd>←</kbd> <kbd>→</kbd> step<span id="akey"> · <kbd>↑</kbd> <kbd>↓</kbd> switch list</span> · <kbd>[</kbd> <kbd>]</kbd> views<span id="lkey"> · <kbd>L</kbd> day / evening</span> · <kbd>C</kbd> compare</span>
+      <span class="keys"><kbd>1</kbd>–<kbd id="kmax">5</kbd> <span id="knoun">layouts</span> · <kbd>←</kbd> <kbd>→</kbd> step<span id="akey"> · <kbd>↑</kbd> <kbd>↓</kbd> switch list</span> · <kbd>[</kbd> <kbd>]</kbd> views<span id="lkey"> · <kbd>L</kbd> day / evening</span> · <kbd>C</kbd> compare</span>
     </div>
   </section>
 
@@ -160,6 +184,7 @@ footer code { font: 400 12px/1.4 var(--mono); }
       </div>
     </div>
   </section>
+  </div>
 
   <section>
     <p class="label" id="stripLabel">All layouts in this view</p>
@@ -170,7 +195,7 @@ footer code { font: 400 12px/1.4 var(--mono); }
 </div>
 
 <script>
-const DATA = {"title": "Garage: Layout, Workout Corner and Car", "subtitle": "The fit-out as it stands (not final): a 30 in landing, three steps down with shoe drawers in the risers, your YUKON cabinet, gym rubber, a Peloton facing a TV on the north wall by the steps, a ceiling pull-up bar and LED shop lights. Try the back wall three ways: the organizer facing the door (as now), the organizer back against the wall on a longer platform (your first layout), or a mudroom bench and beadboard like your new photo. Swap the workout gear and park a Caterham Seven. The epoxy and the lights have their own page.", "cameras": [{"id": "CAM_GarageLanding", "label": "The landing", "note": "From beside the overhead door: the landing, the organizer, the cabinet and the workout corner", "aspect": 1.4286}, {"id": "CAM_GarageBackWall", "label": "The back wall", "note": "From the south-west corner by the window: the back wall from the steps to the corner", "aspect": 1.4286}, {"id": "CAM_GarageFromLanding", "label": "From the house door", "note": "Standing on the landing, looking across the garage at the overhead door", "aspect": 1.4286}], "axes": [{"label": "Back wall", "noun": "layout", "nouns": "layouts", "options": [{"variant": "base", "label": "Organizer facing the door", "kind": "As it stands", "tag": "Current", "swatch": "#A2A8A6", "specs": ["The 30 × 14 in organizer on the landing's south edge, facing the door, its back to the garage", "Your YUKON on the back wall next to the landing"]}, {"variant": "garage_organizer_wall", "label": "Organizer on the wall", "kind": "Your first layout, back again", "tag": "New", "swatch": "#A2A8A6", "specs": ["The same organizer turned to face the garage, its back on the back wall just past the door's casing", "The platform carried 30 in further along the back wall at the same 30 in depth; the steps unchanged", "16 in to stand in front of it on the platform (a 12 in deep organizer would leave 18 in); a guard along the platform's open edges", "The YUKON moves to the corner by the south wall"]}, {"variant": "garage_mudroom", "label": "Mudroom bench and beadboard", "kind": "From your new photo", "tag": "New", "swatch": "#B7B1A7", "specs": ["No organizer: a 42 in open bench at floor level against the back wall, two wooden crates, a flat cushion", "Greige beadboard to 5 ft with a ledge and a row of Shaker pegs, round the corner over the steps", "A guard across the landing's open side; the YUKON in the corner", "Left out from the photo: the tall cabinet and the tilt-out shoe cabinets (no wall left for them with the YUKON; the shoe drawers in the risers stay)"]}]}, {"label": "Workout gear", "noun": "workout set-up", "nouns": "workout set-ups", "options": [{"variant": "base", "label": "Peloton", "kind": "Replaces the generic bike", "tag": "New", "swatch": "#2B2B2D", "specs": ["Facing the TV on the north wall; stays put when a car is in"]}, {"variant": "garage_gym_bench", "label": "Weight bench and dumbbells", "kind": "Option", "tag": "Option", "swatch": "#141414", "specs": ["An adjustable flat/incline bench (about 53 in long) and a pair of 35 lb dumbbells"]}, {"variant": "garage_gym_yoga", "label": "Yoga", "kind": "Option", "tag": "Option", "swatch": "#58807B", "specs": ["A 72 × 24 in mat rolled out, cork blocks, a strap and a foam roller"]}]}, {"label": "Car", "noun": "car", "nouns": "cars", "options": [{"variant": "base", "label": "No car", "kind": "Workout space", "tag": "Current", "swatch": "#8E8E8B", "specs": ["The open floor"]}, {"variant": "garage_car_caterham", "label": "Caterham Seven", "kind": "The kit-car plan, 485 Final Edition colours", "tag": "Idea", "swatch": "#4E2B9C", "specs": ["Violet with a double dark stripe, carbon front wings, anthracite wheels; backed in, centred on the door", "The other liveries (620R Riviera Blue, classic green) are in the Kitchen panel in Blender"]}]}], "lights": [{"id": "day", "label": "Day", "settings": {"quality": "quick", "samples": 128, "resolution": [1920, 1344], "rendered_at": "2026-10-27T09:10:39", "white_balance": 3800.0, "exposure": 1.4, "recessed_kelvin": 3000, "hdri": "resting_place"}}], "settings": {"quality": "quick", "samples": 128, "resolution": [1920, 1344], "rendered_at": "2026-10-27T09:10:39", "white_balance": 3800.0, "exposure": 1.4, "recessed_kelvin": 3000, "hdri": "resting_place"}};
+const DATA = {"title": "Garage: Layout, Workout Corner and Car", "subtitle": "The fit-out as it stands (not final): a 30 in landing, three steps down with shoe drawers in the risers, your YUKON cabinet, gym rubber, a Peloton facing a TV on the north wall by the steps, a ceiling pull-up bar and LED shop lights. Try the back wall three ways: the organizer facing the door (as now), the organizer back against the wall on a longer platform (your first layout), or a mudroom bench and beadboard like your new photo. Swap the workout gear and park a Caterham Seven. The epoxy and the lights have their own page.", "cameras": [{"id": "CAM_GarageLanding", "label": "The landing", "note": "From beside the overhead door: the landing, the organizer, the cabinet and the workout corner", "aspect": 1.4286}, {"id": "CAM_GarageBackWall", "label": "The back wall", "note": "From the south-west corner by the window: the back wall from the steps to the corner", "aspect": 1.4286}, {"id": "CAM_GarageFromLanding", "label": "From the house door", "note": "Standing on the landing, looking across the garage at the overhead door", "aspect": 1.4286}], "axes": [{"label": "Back wall", "noun": "layout", "nouns": "layouts", "options": [{"variant": "base", "label": "Organizer facing the door", "kind": "As it stands", "tag": "Current", "swatch": "#A2A8A6", "specs": ["The 30 × 14 in organizer on the landing's south edge, facing the door, its back to the garage", "Your YUKON on the back wall next to the landing"]}, {"variant": "garage_organizer_wall", "label": "Organizer on the wall", "kind": "Your first layout, back again", "tag": "New", "swatch": "#A2A8A6", "specs": ["The same organizer turned to face the garage, its back on the back wall just past the door's casing", "The platform carried 30 in further along the back wall at the same 30 in depth; the steps unchanged", "16 in to stand in front of it on the platform (a 12 in deep organizer would leave 18 in); a guard along the platform's open edges", "The YUKON moves to the corner by the south wall"]}, {"variant": "garage_mudroom", "label": "Mudroom bench and beadboard", "kind": "From your new photo", "tag": "New", "swatch": "#B7B1A7", "specs": ["No organizer: a 42 in open bench at floor level against the back wall, two wooden crates, a flat cushion", "Greige beadboard to 5 ft with a ledge and a row of Shaker pegs, round the corner over the steps", "A guard across the landing's open side; the YUKON in the corner", "Left out from the photo: the tall cabinet and the tilt-out shoe cabinets (no wall left for them with the YUKON; the shoe drawers in the risers stay)"]}]}, {"label": "Workout gear", "noun": "workout set-up", "nouns": "workout set-ups", "options": [{"variant": "base", "label": "Peloton", "kind": "Replaces the generic bike", "tag": "New", "swatch": "#2B2B2D", "specs": ["Facing the TV on the north wall; stays put when a car is in"]}, {"variant": "garage_gym_bench", "label": "Weight bench and dumbbells", "kind": "Option", "tag": "Option", "swatch": "#141414", "specs": ["An adjustable flat/incline bench (about 53 in long) and a pair of 35 lb dumbbells"]}, {"variant": "garage_gym_yoga", "label": "Yoga", "kind": "Option", "tag": "Option", "swatch": "#58807B", "specs": ["A 72 × 24 in mat rolled out, cork blocks, a strap and a foam roller"]}]}, {"label": "Car", "noun": "car", "nouns": "cars", "options": [{"variant": "base", "label": "No car", "kind": "Workout space", "tag": "Current", "swatch": "#8E8E8B", "specs": ["The open floor"]}, {"variant": "garage_car_caterham", "label": "Caterham Seven", "kind": "The kit-car plan, 485 Final Edition colours", "tag": "Idea", "swatch": "#4E2B9C", "specs": ["Violet with a double dark stripe, carbon front wings, anthracite wheels; backed in, centred on the door", "The other liveries (620R Riviera Blue, classic green) are in the Kitchen panel in Blender"]}]}], "layout": "", "lights": [{"id": "day", "label": "Day", "settings": {"quality": "quick", "samples": 128, "resolution": [1920, 1344], "rendered_at": "2026-10-27T09:10:39", "white_balance": 3800.0, "exposure": 1.4, "recessed_kelvin": 3000, "hdri": "resting_place"}}], "settings": {"quality": "quick", "samples": 128, "resolution": [1920, 1344], "rendered_at": "2026-10-27T09:10:39", "white_balance": 3800.0, "exposure": 1.4, "recessed_kelvin": 3000, "hdri": "resting_place"}};
 const $ = (id) => document.getElementById(id);
 const store = { get(k, d) { try { const v = localStorage.getItem(k); return v === null ? d : JSON.parse(v); } catch (e) { return d; } },
                 set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} } };
@@ -201,6 +226,7 @@ const fixB = () => {
 fixB();
 
 $("subtitle").textContent = DATA.subtitle;
+$("stage").classList.toggle("side", DATA.layout === "side");
 $("akey").hidden = nAx < 2;
 
 DATA.cameras.forEach((c, i) => {
@@ -269,6 +295,7 @@ function render() {
   $("knoun").textContent = AX.nouns;
   const v = $("viewer");
   v.style.aspectRatio = cam.aspect || "2.4";
+  $("stage").style.setProperty("--ar", cam.aspect || 2.4);
   v.style.setProperty("--pos", state.pos + "%");
   const lt = LIGHTS[state.light].label.toLowerCase();
   $("imgA").src = src(state.sel, cam); $("imgA").alt = `${cam.label} with ${names(state.sel)}, ${lt}`;

@@ -1,9 +1,14 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Living Room: Stair Paneling and Runner</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@112,600;112,700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
 <style>
-/* Layout: one wide viewer (renders are panoramic), floor picker + spec sheet under it, all-floors strip below. */
+/* Layout: one wide viewer (renders are panoramic), floor picker + spec sheet under it, all-floors strip below; a
+   page with layout "side" (tall views) puts the viewer beside the picker instead (.stage.side). */
 :root {
   --bg: #e9e7e2;          /* pale stone, a little warm */
   --surface: #f6f5f2;
@@ -82,6 +87,25 @@ button:focus-visible, select:focus-visible, input:focus-visible { outline: 2px s
 
 .below { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 22px; align-items: start; }
 @media (max-width: 900px) { .below { grid-template-columns: minmax(0, 1fr); } }
+.stage { display: grid; gap: 22px; }
+.look > .bar { margin-bottom: 22px; }
+/* layout = "side" (comparisons.toml; the powder room's tall views, 2026-10-27): the picture beside the option lists,
+   kept in view while they scroll; on a phone it stays on top, smaller. --ar is the current view's aspect ratio. */
+.stage.side { grid-template-columns: min(58%, calc((100svh - 170px) * var(--ar, .75))) minmax(0, 1fr); align-items: start; }
+.stage.side .look { position: sticky; top: 10px; }
+.stage.side .look > .bar { margin-bottom: 10px; }
+.stage.side .below { grid-template-columns: minmax(0, 1fr); }
+.stage.side .floors { grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 1fr)); }
+.stage.side .axis + .axis { margin-top: 14px; }
+@media (max-width: 900px) {
+  .stage.side { grid-template-columns: minmax(0, 1fr); }
+  .stage.side .look { top: 0; z-index: 2; background: var(--bg); padding-block: 8px;
+                      margin-inline: calc(-1 * clamp(16px, 3vw, 40px)); padding-inline: clamp(16px, 3vw, 40px);
+                      box-shadow: 0 10px 12px -12px rgba(0, 0, 0, .35); }
+  .stage.side .viewer { width: min(100%, calc(40svh * var(--ar, .75))); margin-inline: auto; }
+  .stage.side .look > .bar { justify-content: center; }
+  .stage.side .caption { display: none; }
+}
 .label { font: 500 12px/1 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted);
          margin: 0 0 10px; }
 .floors { display: grid; gap: 6px; }
@@ -130,12 +154,12 @@ footer code { font: 400 12px/1.4 var(--mono); }
     <p class="sub" id="subtitle"></p>
   </header>
 
-  <div class="bar">
-    <nav class="views" role="tablist" aria-label="View" id="views"></nav>
-    <div class="lights" role="tablist" aria-label="Light" id="lights" hidden></div>
-  </div>
-
-  <section>
+  <div class="stage" id="stage">
+  <section class="look">
+    <div class="bar">
+      <nav class="views" role="tablist" aria-label="View" id="views"></nav>
+      <div class="lights" role="tablist" aria-label="Light" id="lights" hidden></div>
+    </div>
     <figure class="viewer" id="viewer">
       <img id="imgA" class="layer a" alt="">
       <div class="layer b" id="layerB" hidden><img id="imgB" alt=""></div>
@@ -145,7 +169,7 @@ footer code { font: 400 12px/1.4 var(--mono); }
     </figure>
     <div class="caption">
       <span id="camNote"></span>
-      <span><kbd>1</kbd>–<kbd id="kmax">5</kbd> <span id="knoun">wall options</span> · <kbd>←</kbd> <kbd>→</kbd> step<span id="akey"> · <kbd>↑</kbd> <kbd>↓</kbd> switch list</span> · <kbd>[</kbd> <kbd>]</kbd> views<span id="lkey"> · <kbd>L</kbd> day / evening</span> · <kbd>C</kbd> compare</span>
+      <span class="keys"><kbd>1</kbd>–<kbd id="kmax">5</kbd> <span id="knoun">wall options</span> · <kbd>←</kbd> <kbd>→</kbd> step<span id="akey"> · <kbd>↑</kbd> <kbd>↓</kbd> switch list</span> · <kbd>[</kbd> <kbd>]</kbd> views<span id="lkey"> · <kbd>L</kbd> day / evening</span> · <kbd>C</kbd> compare</span>
     </div>
   </section>
 
@@ -160,6 +184,7 @@ footer code { font: 400 12px/1.4 var(--mono); }
       </div>
     </div>
   </section>
+  </div>
 
   <section>
     <p class="label" id="stripLabel">All wall options in this view</p>
@@ -170,7 +195,7 @@ footer code { font: 400 12px/1.4 var(--mono); }
 </div>
 
 <script>
-const DATA = {"title": "Living Room: Stair Paneling and Runner", "subtitle": "Your stair photos on the stair to the second floor: box-panel moulding up the stairwell wall (a grid stepping with the stair, as in the first photo) and on the knee wall's living side (raking panels), all in one warm cream; or the classic stair wainscot from your third photo, a white chair rail following the stair over raked picture-frame panels; and a waterfall kilim runner with brass rods at every riser, with a matching piece on the landing step (from the second photo). The runner's pattern is drawn for the model: no product matches the photo.", "cameras": [{"id": "CAM_StairUp", "label": "Up the stair", "note": "On the landing step, looking up the flight", "aspect": 0.75}, {"id": "CAM_LivingStair", "label": "From the living room", "note": "From near the north wall (matched to your photo): the knee wall, the stairwell above it", "aspect": 1.3333}, {"id": "CAM_Entry", "label": "The entry", "note": "Matched to your photo of the front door: the landing step and the foot of the stair", "aspect": 1.3333}], "axes": [{"label": "Walls", "noun": "wall option", "nouns": "wall options", "options": [{"variant": "base", "label": "As now: painted walls", "kind": "Current", "tag": "Current", "swatch": "#E7E0D2", "specs": ["White trim, the wall paint above it"]}, {"variant": "stair_panels", "label": "Box-panel moulding, warm cream", "kind": "From your first photo", "tag": "New", "swatch": "#E4D5AD", "specs": ["Applied stiles and rails (4 in and 3½ in, ¾ in proud) with flat fields about 19 in wide, the grid stepping up with the stair, a dado rail level under the upper landing", "Raking panels on the knee wall's living side, under the cap", "Everything one cream (walls, trim, risers, balusters; the treads and handrail stay oak), like the photo"]}, {"variant": "stair_wainscot", "label": "Chair-rail wainscot, white", "kind": "From your third photo", "tag": "New", "swatch": "#F2EFE8", "specs": ["A chair rail following the stair 32 in over the nosings, raked picture-frame panels under it (plumb sides), the wall under the rail painted white like the trim; the wall above keeps its colour", "Level on the landing (one panel, as at the photo's foot) and across the wall at the top, raked up both sides of the flight; frames on the knee wall's living side, under the cap", "Sizes are the usual ones for this detail (2¾ in rail, 1¼ in frames, 3½ in margins)"]}]}, {"label": "Runner", "noun": "runner", "nouns": "runner options", "options": [{"variant": "base", "label": "Bare oak treads", "kind": "Current", "tag": "Current", "swatch": "#B58E5C", "specs": ["The existing oak treads"]}, {"variant": "stair_runner", "label": "Kilim runner with brass rods", "kind": "From your second photo", "tag": "New", "swatch": "#A8432A", "specs": ["30 in wide on the 40 in treads (5 in of oak each side), waterfall over each nosing", "Rust, terracotta and navy with ochre and ivory, a darker navy border", "A ½ in brass rod at the base of every riser", "A matching piece on the landing step (the knee wall hides the flight from the room: the landing is where it shows); the closet door may need a small undercut"]}]}], "lights": [{"id": "day", "label": "Day", "settings": {"quality": "draft", "samples": 256, "resolution": [1920, 2560], "rendered_at": "2026-10-27T17:52:53", "white_balance": 3800.0, "exposure": 1.4, "recessed_kelvin": 3000, "hdri": "resting_place"}}], "settings": {"quality": "draft", "samples": 256, "resolution": [1920, 2560], "rendered_at": "2026-10-27T17:52:53", "white_balance": 3800.0, "exposure": 1.4, "recessed_kelvin": 3000, "hdri": "resting_place"}};
+const DATA = {"title": "Living Room: Stair Paneling and Runner", "subtitle": "Your stair photos on the stair to the second floor: box-panel moulding up the stairwell wall (a grid stepping with the stair, as in the first photo) and on the knee wall's living side (raking panels), all in one warm cream; or the classic stair wainscot from your third photo, a white chair rail following the stair over raked picture-frame panels; and a waterfall kilim runner with brass rods at every riser, with a matching piece on the landing step (from the second photo). The runner's pattern is drawn for the model: no product matches the photo.", "cameras": [{"id": "CAM_StairUp", "label": "Up the stair", "note": "On the landing step, looking up the flight", "aspect": 0.75}, {"id": "CAM_LivingStair", "label": "From the living room", "note": "From near the north wall (matched to your photo): the knee wall, the stairwell above it", "aspect": 1.3333}, {"id": "CAM_Entry", "label": "The entry", "note": "Matched to your photo of the front door: the landing step and the foot of the stair", "aspect": 1.3333}], "axes": [{"label": "Walls", "noun": "wall option", "nouns": "wall options", "options": [{"variant": "base", "label": "As now: painted walls", "kind": "Current", "tag": "Current", "swatch": "#E7E0D2", "specs": ["White trim, the wall paint above it"]}, {"variant": "stair_panels", "label": "Box-panel moulding, warm cream", "kind": "From your first photo", "tag": "New", "swatch": "#E4D5AD", "specs": ["Applied stiles and rails (4 in and 3½ in, ¾ in proud) with flat fields about 19 in wide, the grid stepping up with the stair, a dado rail level under the upper landing", "Raking panels on the knee wall's living side, under the cap", "Everything one cream (walls, trim, risers, balusters; the treads and handrail stay oak), like the photo"]}, {"variant": "stair_wainscot", "label": "Chair-rail wainscot, white", "kind": "From your third photo", "tag": "New", "swatch": "#F2EFE8", "specs": ["A chair rail following the stair 32 in over the nosings, raked picture-frame panels under it (plumb sides), the wall under the rail painted white like the trim; the wall above keeps its colour", "Level on the landing (one panel, as at the photo's foot) and across the wall at the top, raked up both sides of the flight; frames on the knee wall's living side, under the cap", "Sizes are the usual ones for this detail (2¾ in rail, 1¼ in frames, 3½ in margins)"]}]}, {"label": "Runner", "noun": "runner", "nouns": "runner options", "options": [{"variant": "base", "label": "Bare oak treads", "kind": "Current", "tag": "Current", "swatch": "#B58E5C", "specs": ["The existing oak treads"]}, {"variant": "stair_runner", "label": "Kilim runner with brass rods", "kind": "From your second photo", "tag": "New", "swatch": "#A8432A", "specs": ["30 in wide on the 40 in treads (5 in of oak each side), waterfall over each nosing", "Rust, terracotta and navy with ochre and ivory, a darker navy border", "A ½ in brass rod at the base of every riser", "A matching piece on the landing step (the knee wall hides the flight from the room: the landing is where it shows); the closet door may need a small undercut"]}]}], "layout": "", "lights": [{"id": "day", "label": "Day", "settings": {"quality": "draft", "samples": 256, "resolution": [1920, 2560], "rendered_at": "2026-10-27T17:52:53", "white_balance": 3800.0, "exposure": 1.4, "recessed_kelvin": 3000, "hdri": "resting_place"}}], "settings": {"quality": "draft", "samples": 256, "resolution": [1920, 2560], "rendered_at": "2026-10-27T17:52:53", "white_balance": 3800.0, "exposure": 1.4, "recessed_kelvin": 3000, "hdri": "resting_place"}};
 const $ = (id) => document.getElementById(id);
 const store = { get(k, d) { try { const v = localStorage.getItem(k); return v === null ? d : JSON.parse(v); } catch (e) { return d; } },
                 set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} } };
@@ -201,6 +226,7 @@ const fixB = () => {
 fixB();
 
 $("subtitle").textContent = DATA.subtitle;
+$("stage").classList.toggle("side", DATA.layout === "side");
 $("akey").hidden = nAx < 2;
 
 DATA.cameras.forEach((c, i) => {
@@ -269,6 +295,7 @@ function render() {
   $("knoun").textContent = AX.nouns;
   const v = $("viewer");
   v.style.aspectRatio = cam.aspect || "2.4";
+  $("stage").style.setProperty("--ar", cam.aspect || 2.4);
   v.style.setProperty("--pos", state.pos + "%");
   const lt = LIGHTS[state.light].label.toLowerCase();
   $("imgA").src = src(state.sel, cam); $("imgA").alt = `${cam.label} with ${names(state.sel)}, ${lt}`;

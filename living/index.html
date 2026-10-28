@@ -1,9 +1,14 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Living Room: Sofa, Rug, TV Wall and Curtains</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@112,600;112,700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
 <style>
-/* Layout: one wide viewer (renders are panoramic), floor picker + spec sheet under it, all-floors strip below. */
+/* Layout: one wide viewer (renders are panoramic), floor picker + spec sheet under it, all-floors strip below; a
+   page with layout "side" (tall views) puts the viewer beside the picker instead (.stage.side). */
 :root {
   --bg: #e9e7e2;          /* pale stone, a little warm */
   --surface: #f6f5f2;
@@ -82,6 +87,25 @@ button:focus-visible, select:focus-visible, input:focus-visible { outline: 2px s
 
 .below { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 22px; align-items: start; }
 @media (max-width: 900px) { .below { grid-template-columns: minmax(0, 1fr); } }
+.stage { display: grid; gap: 22px; }
+.look > .bar { margin-bottom: 22px; }
+/* layout = "side" (comparisons.toml; the powder room's tall views, 2026-10-27): the picture beside the option lists,
+   kept in view while they scroll; on a phone it stays on top, smaller. --ar is the current view's aspect ratio. */
+.stage.side { grid-template-columns: min(58%, calc((100svh - 170px) * var(--ar, .75))) minmax(0, 1fr); align-items: start; }
+.stage.side .look { position: sticky; top: 10px; }
+.stage.side .look > .bar { margin-bottom: 10px; }
+.stage.side .below { grid-template-columns: minmax(0, 1fr); }
+.stage.side .floors { grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 1fr)); }
+.stage.side .axis + .axis { margin-top: 14px; }
+@media (max-width: 900px) {
+  .stage.side { grid-template-columns: minmax(0, 1fr); }
+  .stage.side .look { top: 0; z-index: 2; background: var(--bg); padding-block: 8px;
+                      margin-inline: calc(-1 * clamp(16px, 3vw, 40px)); padding-inline: clamp(16px, 3vw, 40px);
+                      box-shadow: 0 10px 12px -12px rgba(0, 0, 0, .35); }
+  .stage.side .viewer { width: min(100%, calc(40svh * var(--ar, .75))); margin-inline: auto; }
+  .stage.side .look > .bar { justify-content: center; }
+  .stage.side .caption { display: none; }
+}
 .label { font: 500 12px/1 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted);
          margin: 0 0 10px; }
 .floors { display: grid; gap: 6px; }
@@ -130,12 +154,12 @@ footer code { font: 400 12px/1.4 var(--mono); }
     <p class="sub" id="subtitle"></p>
   </header>
 
-  <div class="bar">
-    <nav class="views" role="tablist" aria-label="View" id="views"></nav>
-    <div class="lights" role="tablist" aria-label="Light" id="lights" hidden></div>
-  </div>
-
-  <section>
+  <div class="stage" id="stage">
+  <section class="look">
+    <div class="bar">
+      <nav class="views" role="tablist" aria-label="View" id="views"></nav>
+      <div class="lights" role="tablist" aria-label="Light" id="lights" hidden></div>
+    </div>
     <figure class="viewer" id="viewer">
       <img id="imgA" class="layer a" alt="">
       <div class="layer b" id="layerB" hidden><img id="imgB" alt=""></div>
@@ -145,7 +169,7 @@ footer code { font: 400 12px/1.4 var(--mono); }
     </figure>
     <div class="caption">
       <span id="camNote"></span>
-      <span><kbd>1</kbd>–<kbd id="kmax">5</kbd> <span id="knoun">sofas</span> · <kbd>←</kbd> <kbd>→</kbd> step<span id="akey"> · <kbd>↑</kbd> <kbd>↓</kbd> switch list</span> · <kbd>[</kbd> <kbd>]</kbd> views<span id="lkey"> · <kbd>L</kbd> day / evening</span> · <kbd>C</kbd> compare</span>
+      <span class="keys"><kbd>1</kbd>–<kbd id="kmax">5</kbd> <span id="knoun">sofas</span> · <kbd>←</kbd> <kbd>→</kbd> step<span id="akey"> · <kbd>↑</kbd> <kbd>↓</kbd> switch list</span> · <kbd>[</kbd> <kbd>]</kbd> views<span id="lkey"> · <kbd>L</kbd> day / evening</span> · <kbd>C</kbd> compare</span>
     </div>
   </section>
 
@@ -160,6 +184,7 @@ footer code { font: 400 12px/1.4 var(--mono); }
       </div>
     </div>
   </section>
+  </div>
 
   <section>
     <p class="label" id="stripLabel">All sofas in this view</p>
@@ -170,7 +195,7 @@ footer code { font: 400 12px/1.4 var(--mono); }
 </div>
 
 <script>
-const DATA = {"title": "Living Room: Sofa, Rug, TV Wall and Curtains", "subtitle": "The living room furnished with the new ideas: the bay window back with its window seat and cushions, a Frame TV where today's TV hangs with a sideboard under it, curtains on a brass rod across the bay, Kirsten's Loloi Jules rug under the sofa, and new: an armchair in the empty corner by the bay (my pick, see its notes). Compare the 7th Avenue in desert taupe (the olive and sand are gone, as is the Medley), the Joybird Sebastian, your new Koala Wanda and your current couch. The floor's colour is retuned to your photos. The TV shows a placeholder picture in Art Mode.", "cameras": [{"id": "CAM_LivingSofa", "label": "The sofa", "note": "From the TV wall, looking toward the sofa, the stairs, the front door and the bay", "aspect": 1.3333}, {"id": "CAM_LivingTV", "label": "The TV wall", "note": "From the walkway along the kitchen wall: the TV and sideboard, the office doorway, the bay", "aspect": 1.3333}, {"id": "CAM_LivingBay", "label": "The bay window", "note": "From beside the kitchen opening, looking west at the bay, its seat cushions and the curtains", "aspect": 1.3333}], "axes": [{"label": "Sofa", "noun": "sofa", "nouns": "sofas", "options": [{"variant": "base", "label": "7th Avenue 3-seat, thin arms, desert taupe velvet", "kind": "Kirsten's pick", "tag": "Option", "swatch": "#B8AA9F", "specs": ["98 × 39 in (Classic depth, Slim width), seat 18 in, back cushions to 38 in", "Premium performance velvet in a warm sand-kissed taupe", "$3,590"], "link": "https://7thavenue.co/products/3-seat-modular-sofa-thin-arms"}, {"variant": "living_sofa_sebastian", "label": "Joybird Sebastian sofa bed, Harper Cinnamon", "kind": "Sleeper", "tag": "New", "swatch": "#5A2103", "specs": ["94 × 41.5 × 31 in: 4 in narrower than the 7th Avenue, 2.5 in deeper, the lowest back of the four; tight back, one long seat (the folded mattress)", "Opens to a 77.5 × 70 in bed, over most of the rug", "Harper performance chenille in a deep rust; black peg legs", "About $2,400 in this fabric (sale price to Oct 20)"], "link": "https://joybird.com/sofas/sebastian-sofa-bed/?fabric=harper_cinnamon"}, {"variant": "living_sofa_wanda", "label": "Koala Wanda sofa bed, Australia 01 (olive)", "kind": "Sleeper with a reversible chaise", "tag": "New", "swatch": "#6A6234", "specs": ["99 in Queen: 99 × 39 in (69 in at the chaise), back 31½ in, seat 17 in high; 10 feet", "Chaise on the east end, facing the TV (it's reversible); a queen bed folds out", "Australia 01, Koala's Pantone olive weave; $3,295"], "link": "https://us.koala.com/products/wanda-sofa-bed?variant=44240073490614"}, {"variant": "living_sofa_current", "label": "Your current couch", "kind": "For comparison", "tag": "Current", "swatch": "#D9D2C4", "specs": ["Cream cushions on an exposed walnut frame with black legs", "About 84 × 32 in, estimated from photos (±6 in on the width)"]}]}, {"label": "Armchair", "noun": "armchair", "nouns": "armchair options", "options": [{"variant": "base", "label": "Birch Lane Ginger lounge chair, blue", "kind": "New: in the empty corner by the bay", "tag": "New", "swatch": "#5F6E76", "specs": ["31½ W × 33.9 D × 35.8 H in, seat 19.3 in: a diamond-tufted tub back sweeping into sloped arms, a piped T-cushion, turned legs", "Back to the north-west corner, turned to face the sofa; clear of the office doorway and the curtains", "My pick for the corner: its dusty slate blue ties the rug's ocean field, your stair-runner and settee photos, and sits with every sofa; $742 on sale (one review so far)"], "link": "https://www.birchlane.com/furniture/pdp/birch-lane-ginger-accent-lounge-chair-b114904709.html?piid=1362243944"}, {"variant": "living_chair_none", "label": "No armchair", "kind": "The corner empty, as before", "tag": "Option", "swatch": "#C9BFB0", "specs": ["The corner between the bay and the office doorway left open"]}]}, {"label": "Under the TV", "noun": "sideboard", "nouns": "sideboards", "options": [{"variant": "base", "label": "Kayte 58 in, teak", "kind": "New idea", "tag": "New", "swatch": "#92643C", "specs": ["58 × 15¾ × 32.2 in, four doors with notched mouldings, antique-bronze knobs", "$330"], "link": "https://www.wayfair.com/furniture/pdp/winston-porter-kayte-transitional-58w-4-door-sideboard-with-adjustable-shelves-and-cable-management-w115305845.html"}, {"variant": "living_sideboard_fluted", "label": "Fluted sideboard, walnut", "kind": "New idea", "tag": "New", "swatch": "#5C391F", "specs": ["44.8 × 15.8 × 29.1 in, routed racetrack panels, wood bar pulls", "Narrower than the 48.7 in TV above it", "$330"], "link": "https://www.wayfair.com/furniture/pdp/george-oliver-mid-century-modern-fluted-sideboard-cabinet-with-adjustable-shelves-sturdy-base-buffet-cabinet-with-storage-storage-cabinet-for-living-room-entryway-hallway-dining-room-kitchen-walnut-hiff9803.html"}]}, {"label": "Curtains", "noun": "curtain", "nouns": "curtains", "options": [{"variant": "base", "label": "West Elm pleated linen, alabaster", "kind": "New idea", "tag": "New", "swatch": "#D1C8B1", "specs": ["European flax with a blackout lining, double pinch pleats on brass rings", "On an antique-brass rod at 92 in, stacked beside the bay"], "link": "https://www.westelm.com/products/pleated-european-flax-linen-blackout-curtain-t7128/"}, {"variant": "living_curtain_mulberry", "label": "West Elm pleated linen, mulberry", "kind": "New idea", "tag": "New", "swatch": "#69423A", "specs": ["A dusty red-brown linen"], "link": "https://www.westelm.com/products/pleated-european-flax-linen-blackout-curtain-t7128/"}]}], "lights": [{"id": "day", "label": "Day", "settings": {"quality": "quick", "samples": 128, "resolution": [1920, 1440], "rendered_at": "2026-10-27T09:59:16", "white_balance": 3800.0, "exposure": 1.4, "recessed_kelvin": 3000, "hdri": "resting_place"}}], "settings": {"quality": "quick", "samples": 128, "resolution": [1920, 1440], "rendered_at": "2026-10-27T09:59:16", "white_balance": 3800.0, "exposure": 1.4, "recessed_kelvin": 3000, "hdri": "resting_place"}};
+const DATA = {"title": "Living Room: Sofa, Rug, TV Wall and Curtains", "subtitle": "The living room furnished with the new ideas: the bay window back with its window seat and cushions, a Frame TV where today's TV hangs with a sideboard under it, curtains on a brass rod across the bay, Kirsten's Loloi Jules rug under the sofa, and new: an armchair in the empty corner by the bay (my pick, see its notes). Compare the 7th Avenue in desert taupe (the olive and sand are gone, as is the Medley), the Joybird Sebastian, your new Koala Wanda and your current couch. The floor's colour is retuned to your photos. The TV shows a placeholder picture in Art Mode.", "cameras": [{"id": "CAM_LivingSofa", "label": "The sofa", "note": "From the TV wall, looking toward the sofa, the stairs, the front door and the bay", "aspect": 1.3333}, {"id": "CAM_LivingTV", "label": "The TV wall", "note": "From the walkway along the kitchen wall: the TV and sideboard, the office doorway, the bay", "aspect": 1.3333}, {"id": "CAM_LivingBay", "label": "The bay window", "note": "From beside the kitchen opening, looking west at the bay, its seat cushions and the curtains", "aspect": 1.3333}], "axes": [{"label": "Sofa", "noun": "sofa", "nouns": "sofas", "options": [{"variant": "base", "label": "7th Avenue 3-seat, thin arms, desert taupe velvet", "kind": "Kirsten's pick", "tag": "Option", "swatch": "#B8AA9F", "specs": ["98 × 39 in (Classic depth, Slim width), seat 18 in, back cushions to 38 in", "Premium performance velvet in a warm sand-kissed taupe", "$3,590"], "link": "https://7thavenue.co/products/3-seat-modular-sofa-thin-arms"}, {"variant": "living_sofa_sebastian", "label": "Joybird Sebastian sofa bed, Harper Cinnamon", "kind": "Sleeper", "tag": "New", "swatch": "#5A2103", "specs": ["94 × 41.5 × 31 in: 4 in narrower than the 7th Avenue, 2.5 in deeper, the lowest back of the four; tight back, one long seat (the folded mattress)", "Opens to a 77.5 × 70 in bed, over most of the rug", "Harper performance chenille in a deep rust; black peg legs", "About $2,400 in this fabric (sale price to Oct 20)"], "link": "https://joybird.com/sofas/sebastian-sofa-bed/?fabric=harper_cinnamon"}, {"variant": "living_sofa_wanda", "label": "Koala Wanda sofa bed, Australia 01 (olive)", "kind": "Sleeper with a reversible chaise", "tag": "New", "swatch": "#6A6234", "specs": ["99 in Queen: 99 × 39 in (69 in at the chaise), back 31½ in, seat 17 in high; 10 feet", "Chaise on the east end, facing the TV (it's reversible); a queen bed folds out", "Australia 01, Koala's Pantone olive weave; $3,295"], "link": "https://us.koala.com/products/wanda-sofa-bed?variant=44240073490614"}, {"variant": "living_sofa_current", "label": "Your current couch", "kind": "For comparison", "tag": "Current", "swatch": "#D9D2C4", "specs": ["Cream cushions on an exposed walnut frame with black legs", "About 84 × 32 in, estimated from photos (±6 in on the width)"]}]}, {"label": "Armchair", "noun": "armchair", "nouns": "armchair options", "options": [{"variant": "base", "label": "Birch Lane Ginger lounge chair, blue", "kind": "New: in the empty corner by the bay", "tag": "New", "swatch": "#5F6E76", "specs": ["31½ W × 33.9 D × 35.8 H in, seat 19.3 in: a diamond-tufted tub back sweeping into sloped arms, a piped T-cushion, turned legs", "Back to the north-west corner, turned to face the sofa; clear of the office doorway and the curtains", "My pick for the corner: its dusty slate blue ties the rug's ocean field, your stair-runner and settee photos, and sits with every sofa; $742 on sale (one review so far)"], "link": "https://www.birchlane.com/furniture/pdp/birch-lane-ginger-accent-lounge-chair-b114904709.html?piid=1362243944"}, {"variant": "living_chair_english", "label": "Ivy Bronx English Classic Roll Arm Chair, beige", "kind": "Your link", "tag": "New", "swatch": "#B4AA9C", "specs": ["29 W × 35 D × 33 H in (the listing's smaller size): low English roll arms set back from a piped T-cushion, a loose boxed back pillow, turned bun front legs and sabre back legs in deep walnut", "Beige polyester weave; the seat and back cushions zip off, and the seat cushion reverses", "In the Ginger's corner, turned a little less toward the sofa (it's deeper and square-backed), so its legs stay off the rug", "About $258 on sale, 4.1 stars from 29 reviews; it also comes in navy or white, and in a 34½ in size"], "link": "https://www.wayfair.com/furniture/pdp/ivy-bronx-english-classic-roll-arm-chair-w114681861.html?piid=1127141683%2C1128980311%2C1136986570"}, {"variant": "living_chair_none", "label": "No armchair", "kind": "The corner empty, as before", "tag": "Option", "swatch": "#C9BFB0", "specs": ["The corner between the bay and the office doorway left open"]}]}, {"label": "Under the TV", "noun": "sideboard", "nouns": "sideboards", "options": [{"variant": "base", "label": "Kayte 58 in, teak", "kind": "New idea", "tag": "New", "swatch": "#92643C", "specs": ["58 × 15¾ × 32.2 in, four doors with notched mouldings, antique-bronze knobs", "$330"], "link": "https://www.wayfair.com/furniture/pdp/winston-porter-kayte-transitional-58w-4-door-sideboard-with-adjustable-shelves-and-cable-management-w115305845.html"}, {"variant": "living_sideboard_fluted", "label": "Fluted sideboard, walnut", "kind": "New idea", "tag": "New", "swatch": "#5C391F", "specs": ["44.8 × 15.8 × 29.1 in, routed racetrack panels, wood bar pulls", "Narrower than the 48.7 in TV above it", "$330"], "link": "https://www.wayfair.com/furniture/pdp/george-oliver-mid-century-modern-fluted-sideboard-cabinet-with-adjustable-shelves-sturdy-base-buffet-cabinet-with-storage-storage-cabinet-for-living-room-entryway-hallway-dining-room-kitchen-walnut-hiff9803.html"}]}, {"label": "Curtains", "noun": "curtain", "nouns": "curtains", "options": [{"variant": "base", "label": "West Elm pleated linen, alabaster", "kind": "New idea", "tag": "New", "swatch": "#D1C8B1", "specs": ["European flax with a blackout lining, double pinch pleats on brass rings", "On an antique-brass rod at 92 in, stacked beside the bay"], "link": "https://www.westelm.com/products/pleated-european-flax-linen-blackout-curtain-t7128/"}, {"variant": "living_curtain_mulberry", "label": "West Elm pleated linen, mulberry", "kind": "New idea", "tag": "New", "swatch": "#69423A", "specs": ["A dusty red-brown linen"], "link": "https://www.westelm.com/products/pleated-european-flax-linen-blackout-curtain-t7128/"}]}], "layout": "", "lights": [{"id": "day", "label": "Day", "settings": {"quality": "quick", "samples": 128, "resolution": [1920, 1440], "rendered_at": "2026-10-27T09:59:16", "white_balance": 3800.0, "exposure": 1.4, "recessed_kelvin": 3000, "hdri": "resting_place"}}], "settings": {"quality": "quick", "samples": 128, "resolution": [1920, 1440], "rendered_at": "2026-10-27T09:59:16", "white_balance": 3800.0, "exposure": 1.4, "recessed_kelvin": 3000, "hdri": "resting_place"}};
 const $ = (id) => document.getElementById(id);
 const store = { get(k, d) { try { const v = localStorage.getItem(k); return v === null ? d : JSON.parse(v); } catch (e) { return d; } },
                 set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} } };
@@ -201,6 +226,7 @@ const fixB = () => {
 fixB();
 
 $("subtitle").textContent = DATA.subtitle;
+$("stage").classList.toggle("side", DATA.layout === "side");
 $("akey").hidden = nAx < 2;
 
 DATA.cameras.forEach((c, i) => {
@@ -269,6 +295,7 @@ function render() {
   $("knoun").textContent = AX.nouns;
   const v = $("viewer");
   v.style.aspectRatio = cam.aspect || "2.4";
+  $("stage").style.setProperty("--ar", cam.aspect || 2.4);
   v.style.setProperty("--pos", state.pos + "%");
   const lt = LIGHTS[state.light].label.toLowerCase();
   $("imgA").src = src(state.sel, cam); $("imgA").alt = `${cam.label} with ${names(state.sel)}, ${lt}`;

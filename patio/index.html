@@ -1,9 +1,14 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Back Patio: Deck or Stone</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@112,600;112,700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
 <style>
-/* Layout: one wide viewer (renders are panoramic), floor picker + spec sheet under it, all-floors strip below. */
+/* Layout: one wide viewer (renders are panoramic), floor picker + spec sheet under it, all-floors strip below; a
+   page with layout "side" (tall views) puts the viewer beside the picker instead (.stage.side). */
 :root {
   --bg: #e9e7e2;          /* pale stone, a little warm */
   --surface: #f6f5f2;
@@ -82,6 +87,25 @@ button:focus-visible, select:focus-visible, input:focus-visible { outline: 2px s
 
 .below { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 22px; align-items: start; }
 @media (max-width: 900px) { .below { grid-template-columns: minmax(0, 1fr); } }
+.stage { display: grid; gap: 22px; }
+.look > .bar { margin-bottom: 22px; }
+/* layout = "side" (comparisons.toml; the powder room's tall views, 2026-10-27): the picture beside the option lists,
+   kept in view while they scroll; on a phone it stays on top, smaller. --ar is the current view's aspect ratio. */
+.stage.side { grid-template-columns: min(58%, calc((100svh - 170px) * var(--ar, .75))) minmax(0, 1fr); align-items: start; }
+.stage.side .look { position: sticky; top: 10px; }
+.stage.side .look > .bar { margin-bottom: 10px; }
+.stage.side .below { grid-template-columns: minmax(0, 1fr); }
+.stage.side .floors { grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 1fr)); }
+.stage.side .axis + .axis { margin-top: 14px; }
+@media (max-width: 900px) {
+  .stage.side { grid-template-columns: minmax(0, 1fr); }
+  .stage.side .look { top: 0; z-index: 2; background: var(--bg); padding-block: 8px;
+                      margin-inline: calc(-1 * clamp(16px, 3vw, 40px)); padding-inline: clamp(16px, 3vw, 40px);
+                      box-shadow: 0 10px 12px -12px rgba(0, 0, 0, .35); }
+  .stage.side .viewer { width: min(100%, calc(40svh * var(--ar, .75))); margin-inline: auto; }
+  .stage.side .look > .bar { justify-content: center; }
+  .stage.side .caption { display: none; }
+}
 .label { font: 500 12px/1 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted);
          margin: 0 0 10px; }
 .floors { display: grid; gap: 6px; }
@@ -130,12 +154,12 @@ footer code { font: 400 12px/1.4 var(--mono); }
     <p class="sub" id="subtitle"></p>
   </header>
 
-  <div class="bar">
-    <nav class="views" role="tablist" aria-label="View" id="views"></nav>
-    <div class="lights" role="tablist" aria-label="Light" id="lights" hidden></div>
-  </div>
-
-  <section>
+  <div class="stage" id="stage">
+  <section class="look">
+    <div class="bar">
+      <nav class="views" role="tablist" aria-label="View" id="views"></nav>
+      <div class="lights" role="tablist" aria-label="Light" id="lights" hidden></div>
+    </div>
     <figure class="viewer" id="viewer">
       <img id="imgA" class="layer a" alt="">
       <div class="layer b" id="layerB" hidden><img id="imgB" alt=""></div>
@@ -145,7 +169,7 @@ footer code { font: 400 12px/1.4 var(--mono); }
     </figure>
     <div class="caption">
       <span id="camNote"></span>
-      <span><kbd>1</kbd>–<kbd id="kmax">5</kbd> <span id="knoun">patio options</span> · <kbd>←</kbd> <kbd>→</kbd> step<span id="akey"> · <kbd>↑</kbd> <kbd>↓</kbd> switch list</span> · <kbd>[</kbd> <kbd>]</kbd> views<span id="lkey"> · <kbd>L</kbd> day / evening</span> · <kbd>C</kbd> compare</span>
+      <span class="keys"><kbd>1</kbd>–<kbd id="kmax">5</kbd> <span id="knoun">patio options</span> · <kbd>←</kbd> <kbd>→</kbd> step<span id="akey"> · <kbd>↑</kbd> <kbd>↓</kbd> switch list</span> · <kbd>[</kbd> <kbd>]</kbd> views<span id="lkey"> · <kbd>L</kbd> day / evening</span> · <kbd>C</kbd> compare</span>
     </div>
   </section>
 
@@ -160,6 +184,7 @@ footer code { font: 400 12px/1.4 var(--mono); }
       </div>
     </div>
   </section>
+  </div>
 
   <section>
     <p class="label" id="stripLabel">All patio options in this view</p>
@@ -170,7 +195,7 @@ footer code { font: 400 12px/1.4 var(--mono); }
 </div>
 
 <script>
-const DATA = {"title": "Back Patio: Deck or Stone", "subtitle": "Ideas for the space off the dining room's new French doors, built on your rough shape along the back wall (about 11 × 16 ft, plus a 5 ft strip past the doors) and stretched 2–3 ft toward the yard where steps or a table need it. With the A/C moved to the north side, every option now runs right into the sheltered corner by the bump-out, and all stay clear of the playset. The furniture is generic: it's there to show how each layout lives.", "cameras": [{"id": "CAM_Patio", "label": "From the yard", "note": "About 24 ft out on the lawn at eye level, like your inspiration photo", "aspect": 1.5}, {"id": "CAM_PatioCorner", "label": "From the corner", "note": "From the north-east corner beside the slide, along the back wall to the doors", "aspect": 1.5}, {"id": "CAM_PatioDoor", "label": "From the doors", "note": "Standing just outside the French doors, looking out at the main area and the yard", "aspect": 1.5}, {"id": "CAM_PatioAbove", "label": "From upstairs", "note": "From a back bedroom window: the layout from above (a pergola hides what's under it)", "aspect": 1.5}], "axes": [{"label": "Patio", "noun": "patio", "nouns": "patio options", "options": [{"variant": "patio_none", "label": "As it is: lawn and the raised beds", "kind": "Today's back yard", "tag": "Current", "swatch": "#4F6236", "specs": ["Lawn up to the house; the two raised vegetable beds in their wire-mesh enclosure", "The new French doors would sit 18 in above the lawn: some landing is needed either way; the A/C has moved to the north side"]}, {"variant": "patio_deck", "label": "Composite deck, wrap-around steps", "kind": "Deck at door level", "tag": "Inspiration", "swatch": "#8F8B85", "specs": ["Trex Transcend Island Mist, boards parallel to the house in a picture-frame border; 1 in below the door sill, 17 in above the lawn (no railing needed)", "Three 5⅔ in steps (11½ in treads) along the whole yard side, closed at both ends", "Black louvred aluminium pergola over four red Adirondacks round a 42 in gas fire table; grill bay at the south end", "Frameless glass panels on the north edge, a teak loveseat in the corner by the bump-out (where the A/C was), a low planter of feather reed grass and boxwood off the corner", "About 300 sq ft; roughly $25–40k with the pergola"]}, {"variant": "patio_deck_lava_rock", "label": "The deck in Lava Rock", "kind": "Colour option", "tag": "Colour", "swatch": "#5B534D", "specs": ["The same deck in Trex Transcend Lava Rock, a dark charcoal brown (hides dirt, runs hotter in sun)"]}, {"variant": "patio_bluestone", "label": "Bluestone terrace with a stone stoop", "kind": "Ground-level stone", "tag": "Option", "swatch": "#6F7880", "specs": ["Thermal Pennsylvania bluestone (blue select) in a random rectangular pattern inside a 12 in border, 3/8 in polymeric-sand joints, 1 in above the lawn", "A 42 × 115 in bluestone stoop 1½ in below the sill, steps on three sides (5.2 in risers, 13 in treads)", "Teak table for eight with rope chairs under a 9 ft umbrella; an 8 ft grill island in bluestone along the north edge", "'Annabelle' hydrangeas along the back wall into the bump-out corner; boxwoods in tall planters by the steps", "About 360 sq ft; roughly $25–38k with the island"]}, {"variant": "patio_brick", "label": "Brick herringbone garden room", "kind": "Ground-level brick", "tag": "Option", "swatch": "#93503D", "specs": ["Tumbled full-range clay pavers in a 90° herringbone with a soldier border", "A brick stoop with thermal bluestone caps, steps on three sides", "Cedar pergola (6x6 posts, doubled beams, rafters with tail cuts) with bistro string lights over a teak farm table for six", "Lavender along the kitchen wall and a cedar herb bed in the corner by the doors; the vegetable beds re-homed as new cedar beds along the patio's south edge", "Suits the neighbourhood's older houses; roughly $20–30k"]}, {"variant": "patio_split", "label": "Split level: deck landing, porcelain lounge", "kind": "Deck + ground-level pavers", "tag": "Option", "swatch": "#7B4F38", "specs": ["Your 5 ft strip as a Trex Transcend Spiced Rum landing at door level, wide steps on two sides", "24 × 48 in concrete-look porcelain pavers (2 cm, matte) with a crisp edge to the lawn", "A lounge round a 60 in linear gas fire table: teak sofa under the kitchen window, two club chairs, two red Adirondacks", "Feather reed grass in charcoal cube planters and a deck-clad planter along the bump-out; roughly $22–32k"]}]}], "lights": [{"id": "day", "label": "Day", "settings": {"quality": "draft", "samples": 256, "resolution": [1920, 1280], "rendered_at": "2026-10-14T12:23:05", "white_balance": 5600.0, "exposure": 0.0, "recessed_kelvin": 3000, "hdri": "resting_place"}}], "settings": {"quality": "draft", "samples": 256, "resolution": [1920, 1280], "rendered_at": "2026-10-14T12:23:05", "white_balance": 5600.0, "exposure": 0.0, "recessed_kelvin": 3000, "hdri": "resting_place"}};
+const DATA = {"title": "Back Patio: Deck or Stone", "subtitle": "Ideas for the space off the dining room's new French doors, built on your rough shape along the back wall (about 11 × 16 ft, plus a 5 ft strip past the doors) and stretched 2–3 ft toward the yard where steps or a table need it. With the A/C moved to the north side, every option now runs right into the sheltered corner by the bump-out, and all stay clear of the playset. The furniture is generic: it's there to show how each layout lives.", "cameras": [{"id": "CAM_Patio", "label": "From the yard", "note": "About 24 ft out on the lawn at eye level, like your inspiration photo", "aspect": 1.5}, {"id": "CAM_PatioCorner", "label": "From the corner", "note": "From the north-east corner beside the slide, along the back wall to the doors", "aspect": 1.5}, {"id": "CAM_PatioDoor", "label": "From the doors", "note": "Standing just outside the French doors, looking out at the main area and the yard", "aspect": 1.5}, {"id": "CAM_PatioAbove", "label": "From upstairs", "note": "From a back bedroom window: the layout from above (a pergola hides what's under it)", "aspect": 1.5}], "axes": [{"label": "Patio", "noun": "patio", "nouns": "patio options", "options": [{"variant": "patio_none", "label": "As it is: lawn and the raised beds", "kind": "Today's back yard", "tag": "Current", "swatch": "#4F6236", "specs": ["Lawn up to the house; the two raised vegetable beds in their wire-mesh enclosure", "The new French doors would sit 18 in above the lawn: some landing is needed either way; the A/C has moved to the north side"]}, {"variant": "patio_deck", "label": "Composite deck, wrap-around steps", "kind": "Deck at door level", "tag": "Inspiration", "swatch": "#8F8B85", "specs": ["Trex Transcend Island Mist, boards parallel to the house in a picture-frame border; 1 in below the door sill, 17 in above the lawn (no railing needed)", "Three 5⅔ in steps (11½ in treads) along the whole yard side, closed at both ends", "Black louvred aluminium pergola over four red Adirondacks round a 42 in gas fire table; grill bay at the south end", "Frameless glass panels on the north edge, a teak loveseat in the corner by the bump-out (where the A/C was), a low planter of feather reed grass and boxwood off the corner", "About 300 sq ft; roughly $25–40k with the pergola"]}, {"variant": "patio_deck_lava_rock", "label": "The deck in Lava Rock", "kind": "Colour option", "tag": "Colour", "swatch": "#5B534D", "specs": ["The same deck in Trex Transcend Lava Rock, a dark charcoal brown (hides dirt, runs hotter in sun)"]}, {"variant": "patio_bluestone", "label": "Bluestone terrace with a stone stoop", "kind": "Ground-level stone", "tag": "Option", "swatch": "#6F7880", "specs": ["Thermal Pennsylvania bluestone (blue select) in a random rectangular pattern inside a 12 in border, 3/8 in polymeric-sand joints, 1 in above the lawn", "A 42 × 115 in bluestone stoop 1½ in below the sill, steps on three sides (5.2 in risers, 13 in treads)", "Teak table for eight with rope chairs under a 9 ft umbrella; an 8 ft grill island in bluestone along the north edge", "'Annabelle' hydrangeas along the back wall into the bump-out corner; boxwoods in tall planters by the steps", "About 360 sq ft; roughly $25–38k with the island"]}, {"variant": "patio_brick", "label": "Brick herringbone garden room", "kind": "Ground-level brick", "tag": "Option", "swatch": "#93503D", "specs": ["Tumbled full-range clay pavers in a 90° herringbone with a soldier border", "A brick stoop with thermal bluestone caps, steps on three sides", "Cedar pergola (6x6 posts, doubled beams, rafters with tail cuts) with bistro string lights over a teak farm table for six", "Lavender along the kitchen wall and a cedar herb bed in the corner by the doors; the vegetable beds re-homed as new cedar beds along the patio's south edge", "Suits the neighbourhood's older houses; roughly $20–30k"]}, {"variant": "patio_split", "label": "Split level: deck landing, porcelain lounge", "kind": "Deck + ground-level pavers", "tag": "Option", "swatch": "#7B4F38", "specs": ["Your 5 ft strip as a Trex Transcend Spiced Rum landing at door level, wide steps on two sides", "24 × 48 in concrete-look porcelain pavers (2 cm, matte) with a crisp edge to the lawn", "A lounge round a 60 in linear gas fire table: teak sofa under the kitchen window, two club chairs, two red Adirondacks", "Feather reed grass in charcoal cube planters and a deck-clad planter along the bump-out; roughly $22–32k"]}]}], "layout": "", "lights": [{"id": "day", "label": "Day", "settings": {"quality": "draft", "samples": 256, "resolution": [1920, 1280], "rendered_at": "2026-10-14T12:23:05", "white_balance": 5600.0, "exposure": 0.0, "recessed_kelvin": 3000, "hdri": "resting_place"}}], "settings": {"quality": "draft", "samples": 256, "resolution": [1920, 1280], "rendered_at": "2026-10-14T12:23:05", "white_balance": 5600.0, "exposure": 0.0, "recessed_kelvin": 3000, "hdri": "resting_place"}};
 const $ = (id) => document.getElementById(id);
 const store = { get(k, d) { try { const v = localStorage.getItem(k); return v === null ? d : JSON.parse(v); } catch (e) { return d; } },
                 set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} } };
@@ -201,6 +226,7 @@ const fixB = () => {
 fixB();
 
 $("subtitle").textContent = DATA.subtitle;
+$("stage").classList.toggle("side", DATA.layout === "side");
 $("akey").hidden = nAx < 2;
 
 DATA.cameras.forEach((c, i) => {
@@ -269,6 +295,7 @@ function render() {
   $("knoun").textContent = AX.nouns;
   const v = $("viewer");
   v.style.aspectRatio = cam.aspect || "2.4";
+  $("stage").style.setProperty("--ar", cam.aspect || 2.4);
   v.style.setProperty("--pos", state.pos + "%");
   const lt = LIGHTS[state.light].label.toLowerCase();
   $("imgA").src = src(state.sel, cam); $("imgA").alt = `${cam.label} with ${names(state.sel)}, ${lt}`;
