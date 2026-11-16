@@ -14,7 +14,8 @@
 
 - [Powder Room: Door](https://andrewbuyck.github.io/kitchen-remodel/powder_door/): 3 doors, 3 views (decide by: framing)
 - [Powder Room: Toilet](https://andrewbuyck.github.io/kitchen-remodel/powder_toilet/): 2 toilets, 1 view (decide by: plumbing rough-in)
-- [Powder Room: Lower Wall, Floor and Vanity](https://andrewbuyck.github.io/kitchen-remodel/powder/): 5 lower walls × 3 floors × 2 vanities, 2 views (decide by: rough-in (the vanity), then tile and paper)
+- [Powder Room: The Six Favourite Looks](https://andrewbuyck.github.io/kitchen-remodel/powder_looks/): 6 looks, 2 views (decide by: tile and paper: the favourites)
+- [Powder Room: Walls, Lower Wall, Floor and Vanity](https://andrewbuyck.github.io/kitchen-remodel/powder/): 3 wallpapers × 5 lower walls × 3 floors × 2 vanities, 2 views (decide by: rough-in (the vanity), then tile and paper)
 
 ### Dining room
 
