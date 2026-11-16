@@ -5,7 +5,7 @@
 ### Kitchen
 
 - [Kitchen: The Light Over the Island](https://andrewbuyck.github.io/kitchen-remodel/island_pendant/): 3 pendants, 3 views (decide by: electrical rough-in)
-- [Kitchen Floor Comparison](https://andrewbuyck.github.io/kitchen-remodel/floors/): 6 floors, 6 views (decide by: flooring)
+- [Kitchen Floor Comparison](https://andrewbuyck.github.io/kitchen-remodel/floors/): 10 floors, 3 views (decide by: flooring)
 - [Living Room Threshold](https://andrewbuyck.github.io/kitchen-remodel/threshold/): 2 thresholds, 2 views (decide by: flooring)
 - [Countertop Stone](https://andrewbuyck.github.io/kitchen-remodel/counters/): 5 stones, 4 views (decide by: after the cabinets)
 - [Counter Stools](https://andrewbuyck.github.io/kitchen-remodel/stools/): 3 stools, 3 views (decide by: furniture)
@@ -14,7 +14,7 @@
 
 - [Powder Room: Door](https://andrewbuyck.github.io/kitchen-remodel/powder_door/): 3 doors, 3 views (decide by: framing)
 - [Powder Room: Toilet](https://andrewbuyck.github.io/kitchen-remodel/powder_toilet/): 2 toilets, 1 view (decide by: plumbing rough-in)
-- [Powder Room: Walls, Floor and Vanity](https://andrewbuyck.github.io/kitchen-remodel/powder/): 4 wall finishes × 10 lower walls × 3 floors × 3 vanities, 2 views (decide by: rough-in (the vanity), then tile and paper)
+- [Powder Room: Lower Wall, Floor and Vanity](https://andrewbuyck.github.io/kitchen-remodel/powder/): 5 lower walls × 3 floors × 2 vanities, 2 views (decide by: rough-in (the vanity), then tile and paper)
 
 ### Dining room
 
@@ -23,8 +23,13 @@
 
 ### Living room and stair
 
-- [Living Room: Stair Paneling and Runner](https://andrewbuyck.github.io/kitchen-remodel/stair/): 3 wall options × 2 runner options, 3 views (decide by: trim and finishes)
+- [Living Room: Stair Paneling](https://andrewbuyck.github.io/kitchen-remodel/stair/): 5 paneling options, 3 views (decide by: trim and finishes)
 - [Living Room: Sofa, Rug, TV Wall and Curtains](https://andrewbuyck.github.io/kitchen-remodel/living/): 4 sofas × 3 armchair options × 2 sideboards × 2 curtains, 3 views (decide by: furniture)
+
+### Front closet
+
+- [Front Closet: Shelving](https://andrewbuyck.github.io/kitchen-remodel/closet/): 7 layouts, 2 views (decide by: carpentry (after drywall))
+- [Front Closet: Shoes on the Door](https://andrewbuyck.github.io/kitchen-remodel/closet_door/): 5 door options, 1 view (decide by: finishing)
 
 ### Garage
 
