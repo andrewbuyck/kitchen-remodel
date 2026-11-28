@@ -5,7 +5,7 @@
 ### Kitchen
 
 - [Kitchen: The Light Over the Island](https://andrewbuyck.github.io/kitchen-remodel/island_pendant/): 3 pendants, 3 views (decide by: electrical rough-in)
-- [Kitchen Floor Comparison](https://andrewbuyck.github.io/kitchen-remodel/floors/): 10 floors, 3 views (decide by: flooring)
+- [Kitchen Floor Comparison](https://andrewbuyck.github.io/kitchen-remodel/floors/): 15 floors, 3 views (decide by: flooring)
 - [Living Room Threshold](https://andrewbuyck.github.io/kitchen-remodel/threshold/): 2 thresholds, 2 views (decide by: flooring)
 - [Countertop Stone](https://andrewbuyck.github.io/kitchen-remodel/counters/): 6 stones, 4 views (decide by: after the cabinets)
 - [Counter Stools](https://andrewbuyck.github.io/kitchen-remodel/stools/): 3 stools, 3 views (decide by: furniture)
